@@ -20,8 +20,8 @@ namespace TileBasedPlayer20172018
         int tileHeight = 64;
         List<TileRef> TileRefs = new List<TileRef>();
         List<Collider> colliders = new List<Collider>();
-        string[] backTileNames = { "blue box", "pavement", "ground", "blue", "home" };
-        public enum TileType { BLUEBOX, PAVEMENT, GROUND, BLUE,HOME };
+        string[] backTileNames = { "blue box", "pavement", "blue steel", "green box", "home" };
+        public enum TileType { BLUEBOX, PAVEMENT, BLUESTEEL, GREENBOX, HOME };
         int[,] tileMap = new int[,]
     {
         {1,2,2,2,2,2,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2},
@@ -59,7 +59,7 @@ namespace TileBasedPlayer20172018
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            new Camera(this, Vector2.Zero, 
+            new Camera(this, Vector2.Zero,
                 new Vector2(tileMap.GetLength(1) * tileWidth, tileMap.GetLength(0) * tileHeight));
             new InputEngine(this);
             Services.AddService(new TilePlayer(this, new Vector2(64, 128), new List<TileRef>()
@@ -72,7 +72,7 @@ namespace TileBasedPlayer20172018
                 new TileRef(15, 7, 0),
                 new TileRef(15, 8, 0),
             }, 64, 64, 0f));
-            SetColliders(TileType.GROUND);
+            SetColliders(TileType.BLUESTEEL);
             SetColliders(TileType.BLUEBOX);
 
             base.Initialize();
@@ -98,8 +98,9 @@ namespace TileBasedPlayer20172018
             TileRefs.Add(new TileRef(6, 2, 3));
             TileRefs.Add(new TileRef(0, 2, 4));
             // Names fo the Tiles
-            
+
             new SimpleTileLayer(this, backTileNames, tileMap, TileRefs, tileWidth, tileHeight);
+            List<Tile> found = SimpleTileLayer.GetNamedTiles("green box");
             // TODO: use this.Content to load your game content here
         }
 

@@ -18,8 +18,8 @@ namespace Tiling
             get { return _layername; }
             set { _layername = value; }
         }
-        Tile[,] _tiles;
-        public Tile[,] Tiles
+        static Tile[,] _tiles;
+        public static Tile[,] Tiles
         {
             get { return _tiles; }
             set { _tiles = value; }
@@ -47,8 +47,8 @@ namespace Tiling
                 _tileRefs = value;
             }
         }
-        public SimpleTileLayer(Game game, 
-            string[] tileNames, int[,] tileMap, 
+        public SimpleTileLayer(Game game,
+            string[] tileNames, int[,] tileMap,
                         List<TileRef> _tileRefs, int tileWidth, int tileHeight) : base(game)
         {
             _tileSheet = Game.Content.Load<Texture2D>(@"Tiles\tank tiles 64 x 64");
@@ -85,7 +85,7 @@ namespace Tiling
             SpriteBatch sp = Game.Services.GetService<SpriteBatch>();
             //Texture2D tx = Game.Services.GetService<Texture2D>();
             //SpriteFont font = Game.Services.GetService<SpriteFont>();
-            
+
             // Draw the tiles
             sp.Begin(SpriteSortMode.Immediate,
                         BlendState.AlphaBlend, null, null, null, null,
@@ -93,16 +93,40 @@ namespace Tiling
             // Draw the Tiles
             foreach (Tile t in Tiles)
             {
-                Vector2 position = new Vector2(t.X * t.TileWidth  ,
-                                                    t.Y * t.TileHeight );
+                Vector2 position = new Vector2(t.X * t.TileWidth,
+                                                    t.Y * t.TileHeight);
                 sp.Draw(_tileSheet,
-                    new Rectangle(position.ToPoint(), new Point(t.TileWidth, t.TileHeight )),
+                    new Rectangle(position.ToPoint(), new Point(t.TileWidth, t.TileHeight)),
                     new Rectangle(t.TileRef._sheetPosX * t.TileWidth, t.TileRef._sheetPosY * t.TileHeight,
-                                        t.TileWidth , t.TileHeight )
-                    , Color.White,0f,Vector2.Zero,SpriteEffects.None,0f);
+                                        t.TileWidth, t.TileHeight)
+                    , Color.White, 0f, Vector2.Zero, SpriteEffects.None, 0f);
             }
             sp.End();
             base.Draw(gameTime);
         }
+
+        public static List<Tile> GetNamedTiles(string name)
+        {
+            List<Tile> foundTiles = new List<Tile>();
+
+
+            int tileMapHeight = Tiles.GetLength(0); // row int[row,col]
+            int tileMapWidth = Tiles.GetLength(1); // dim 0 = row, dim 1 = col
+
+
+            for (int x = 0; x < tileMapWidth; x++) // look at columns in row
+            {               
+                for (int y = 0; y < tileMapHeight; y++) // look at rows
+                {
+                    if (Tiles[y, x].TileName == name)
+                    {
+                        foundTiles.Add(Tiles[y, x]);
+                    }
+                }       
+            }
+            return foundTiles;
+        }
+
+
     }
 }
