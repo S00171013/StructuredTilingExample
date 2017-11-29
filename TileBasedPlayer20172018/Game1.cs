@@ -11,7 +11,7 @@ namespace TileBasedPlayer20172018
 {
     /// <summary>
     /// This is the main type for your game.
-    /// The pizza is agressive.
+    /// The pizza is agressive. Right?
     /// </summary>
     public class Game1 : Game
     {
