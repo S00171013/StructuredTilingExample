@@ -52,9 +52,9 @@ namespace Tiler
             {
                 this.PixelPosition += new Vector2(0, 1) * speed;
             }
-            if (Keyboard.GetState().IsKeyDown(Keys.Z))
+            if (Keyboard.GetState().IsKeyDown(Keys.Q))
                 this.angleOfRotation -= turnspeed;
-            if (Keyboard.GetState().IsKeyDown(Keys.X))
+            if (Keyboard.GetState().IsKeyDown(Keys.E))
                 this.angleOfRotation += turnspeed;
 
             base.Update(gameTime);

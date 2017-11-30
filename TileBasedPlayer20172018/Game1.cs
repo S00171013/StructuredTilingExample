@@ -11,7 +11,6 @@ namespace TileBasedPlayer20172018
 {
     /// <summary>
     /// This is the main type for your game.
-    /// The pizza is agressive. Right?
     /// </summary>
     public class Game1 : Game
     {
@@ -62,17 +61,24 @@ namespace TileBasedPlayer20172018
             // TODO: Add your initialization logic here
             new Camera(this, Vector2.Zero,
                 new Vector2(tileMap.GetLength(1) * tileWidth, tileMap.GetLength(0) * tileHeight));
+
             new InputEngine(this);
-            Services.AddService(new TilePlayer(this, new Vector2(64, 128), new List<TileRef>()
-            {
-                new TileRef(15, 2, 0),
-                new TileRef(15, 3, 0),
-                new TileRef(15, 4, 0),
-                new TileRef(15, 5, 0),
-                new TileRef(15, 6, 0),
-                new TileRef(15, 7, 0),
-                new TileRef(15, 8, 0),
-            }, 64, 64, 0f));
+
+
+            SpawnPlayer(TileType.HOME);
+
+            //Services.AddService(new TilePlayer(this, new Vector2(64, 128), new List<TileRef>()
+            //{
+            //    new TileRef(15, 2, 0),
+            //    new TileRef(15, 3, 0),
+            //    new TileRef(15, 4, 0),
+            //    new TileRef(15, 5, 0),
+            //    new TileRef(15, 6, 0),
+            //    new TileRef(15, 7, 0),
+            //    new TileRef(15, 8, 0),
+            //}, 64, 64, 0f));
+
+
             SetColliders(TileType.BLUESTEEL);
             SetColliders(TileType.BLUEBOX);
 
@@ -117,9 +123,31 @@ namespace TileBasedPlayer20172018
                             x, y
                             ));
                     }
-
                 }
         }
+
+        // Experimenting with spawning the player on the home tile.
+        public void SpawnPlayer(TileType t)
+        {
+            for (int x = 0; x < tileMap.GetLength(1); x++)
+                for (int y = 0; y < tileMap.GetLength(0); y++)
+                {
+                    if (tileMap[y, x] == (int)t)
+                    {
+                        Services.AddService(new TilePlayer(this, new Vector2(x, y), new List<TileRef>()
+            {
+                new TileRef(15, 2, 0),
+                new TileRef(15, 3, 0),
+                new TileRef(15, 4, 0),
+                new TileRef(15, 5, 0),
+                new TileRef(15, 6, 0),
+                new TileRef(15, 7, 0),
+                new TileRef(15, 8, 0),
+            }, 64, 64, 0f));
+                    }
+                }
+        }
+
         /// <summary>
         /// UnloadContent will be called once per game and is the place to unload
         /// game-specific content.
