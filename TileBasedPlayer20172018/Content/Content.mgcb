@@ -61,3 +61,39 @@
 /processorParam:TextureFormat=Color
 /build:Winter Game Sprites/turret.png
 
+#begin Winter Game Sound Effects Wave/Alert.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Winter Game Sound Effects Wave/Alert.wav
+
+#begin Winter Game Sound Effects Wave/BallsOfSteel.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Winter Game Sound Effects Wave/BallsOfSteel.wav
+
+#begin Winter Game Sound Effects Wave/Noooo.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Winter Game Sound Effects Wave/Noooo.wav
+
+#begin Winter Game Sound Effects Wave/PS1Startup.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Winter Game Sound Effects Wave/PS1Startup.wav
+
+#begin Winter Game Sound Effects Wave/Steel.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Winter Game Sound Effects Wave/Steel.wav
+
+#begin Winter Game Sound Effects Wave/WTFBoom.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Winter Game Sound Effects Wave/WTFBoom.wav
+
