@@ -16,6 +16,12 @@ namespace Tiler
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+
+        //start up music, for test.
+        Song startUpMusic;
+        private soundEffect effect;
+
+
         int tileWidth = 64;
         int tileHeight = 64;
         List<TileRef> TileRefs = new List<TileRef>();
@@ -123,6 +129,12 @@ namespace Tiler
             spriteBatch = new SpriteBatch(GraphicsDevice);
             Services.AddService(spriteBatch);
             Services.AddService(Content.Load<Texture2D>(@"Tiles/tank tiles 64 x 64"));
+
+            //Load the startup music.
+            this.startUpMusic = Content.Load<Song>("@Winter Game Sound Effects Wave/PS1Startup.wav");
+
+            //Set volume.
+            MediaPlayer.Volume = 0.0f;
 
             // Tile References to be drawn on the Map corresponding to the entries in the defined 
             // Tile Map
