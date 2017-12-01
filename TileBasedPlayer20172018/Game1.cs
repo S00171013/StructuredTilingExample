@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using Tiler;
 using Tiling;
 
-namespace TileBasedPlayer20172018
+namespace Tiler
 {
     /// <summary>
     /// This is the main type for your game.
@@ -74,6 +74,35 @@ namespace TileBasedPlayer20172018
             //    new TileRef(15, 7, 0),
             //    new TileRef(15, 8, 0),
             //}, 64, 64, 0f));
+
+            // Create a sentry for testing.
+            Services.AddService(new Sentry(this, new Vector2(64, 128), new List<TileRef>()
+            {
+                new TileRef(20, 2, 0),
+                new TileRef(20, 3, 0),
+                new TileRef(20, 4, 0),
+                new TileRef(20, 5, 0),
+                new TileRef(20, 6, 0),
+                new TileRef(20, 7, 0),
+                new TileRef(20, 8, 0),
+            }, 64, 64, 0f)
+
+
+           // When I instantiate an object by adding it as a service (As I have done above), how can I refer specifically to that object when I want it to carry out its methods?
+           // For example...
+
+            // Usually it's...
+            //Sentry sentry 1 = new Sentry(etcetera, etcetera);
+
+            // ...And later this...
+            //sentry1.Follow(TilePlayer player);
+
+            // But since I have already instantiated my sentry by adding it as a service with no name given to it, I am unsure on how to make this sentry carry out its methods.
+
+            // Is there a way to give a name to this sentry after it has been instantiated?
+
+            
+            );
 
 
             SetColliders(TileType.BLUESTEEL);
@@ -143,7 +172,7 @@ namespace TileBasedPlayer20172018
                 {
                     // If the current position on the map matches 4, the value for the home tile enumeration...
                     if (tileMap[y, x] == (int)t)
-                    {    
+                    {
                         // ...Take a copy of that position and convert the values to float.                   
                         xFloatVer = (float)x;
                         yFloatVer = (float)y;
@@ -170,7 +199,7 @@ namespace TileBasedPlayer20172018
                 }
 
                 // If the home tile has already been found...
-                if(homeTileFound == true)
+                if (homeTileFound == true)
                 {
                     break;
                     //..Exit the outer for loop.
@@ -199,6 +228,8 @@ namespace TileBasedPlayer20172018
             {
                 Exit();
             }
+
+            
 
             // TODO: Add your update logic here
 
