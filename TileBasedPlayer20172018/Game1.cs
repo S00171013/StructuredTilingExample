@@ -37,8 +37,8 @@ namespace TileBasedPlayer20172018
         {2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1,1,2,2,2,1,1,2,2,2,2,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2},
         {2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,2,3,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2},
         {2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2},
-        {2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,3,2,1,1,2,2,2,4,1,2,2,2,2,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2},
-        {2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1,1,2,2,2,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2},
+        {2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,3,2,1,1,2,1,1,4,1,1,1,1,2,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2},
+        {2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1,1,2,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2},
         {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,3,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2},
         {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2},
         {2,2,3,2,2,2,2,2,2,2,2,3,2,2,2,2,2,2,2,2,2,2,2,3,2,2,2,2,2,3,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2},
@@ -64,9 +64,6 @@ namespace TileBasedPlayer20172018
 
             new InputEngine(this);
 
-
-            SpawnPlayer(TileType.HOME);
-
             //Services.AddService(new TilePlayer(this, new Vector2(64, 128), new List<TileRef>()
             //{
             //    new TileRef(15, 2, 0),
@@ -81,6 +78,8 @@ namespace TileBasedPlayer20172018
 
             SetColliders(TileType.BLUESTEEL);
             SetColliders(TileType.BLUEBOX);
+
+            SpawnPlayer(TileType.HOME);
 
             base.Initialize();
         }
@@ -104,7 +103,7 @@ namespace TileBasedPlayer20172018
             TileRefs.Add(new TileRef(6, 3, 2));
             TileRefs.Add(new TileRef(6, 2, 3));
             TileRefs.Add(new TileRef(0, 2, 4));
-            // Names fo the Tiles
+            // Names for the Tiles
 
             new SimpleTileLayer(this, backTileNames, tileMap, TileRefs, tileWidth, tileHeight);
             List<Tile> found = SimpleTileLayer.GetNamedTiles("green box");
@@ -129,12 +128,29 @@ namespace TileBasedPlayer20172018
         // Experimenting with spawning the player on the home tile.
         public void SpawnPlayer(TileType t)
         {
+            // Declare variables 
+
+            // Declare bool to keep track of whether or not the home tile has been found on the map.
+            bool homeTileFound = false;
+
+            // Declare float values to convert the x and y value of the home tile to floats. This will allow the TilePlayer constructor to take a copy of the home tile's x and y value and spawn the player on that tile.
+            float xFloatVer = 0;
+            float yFloatVer = 0;
+
             for (int x = 0; x < tileMap.GetLength(1); x++)
+            {
                 for (int y = 0; y < tileMap.GetLength(0); y++)
                 {
+                    // If the current position on the map matches 4, the value for the home tile enumeration...
                     if (tileMap[y, x] == (int)t)
-                    {
-                        Services.AddService(new TilePlayer(this, new Vector2(x, y), new List<TileRef>()
+                    {    
+                        // ...Take a copy of that position and convert the values to float.                   
+                        xFloatVer = (float)x;
+                        yFloatVer = (float)y;
+
+                        // Spawn the player, the vector2 constructor takes floats only, this is why the previous step is necessary.
+                        // The Vector2 constructor sets the position of the player to that of the home tile, or at least it should.
+                        Services.AddService(new TilePlayer(this, new Vector2(xFloatVer, yFloatVer), new List<TileRef>()
             {
                 new TileRef(15, 2, 0),
                 new TileRef(15, 3, 0),
@@ -144,9 +160,24 @@ namespace TileBasedPlayer20172018
                 new TileRef(15, 7, 0),
                 new TileRef(15, 8, 0),
             }, 64, 64, 0f));
+
+                        homeTileFound = true;
+
+                        // Exit the inner for loop when the home tile has been found, there's no need to search any more of the map.
+                        break;
                     }
+
                 }
+
+                // If the home tile has already been found...
+                if(homeTileFound == true)
+                {
+                    break;
+                    //..Exit the outer for loop.
+                }
+            }
         }
+
 
         /// <summary>
         /// UnloadContent will be called once per game and is the place to unload
@@ -165,7 +196,9 @@ namespace TileBasedPlayer20172018
         protected override void Update(GameTime gameTime)
         {
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+            {
                 Exit();
+            }
 
             // TODO: Add your update logic here
 
