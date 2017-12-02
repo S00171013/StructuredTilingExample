@@ -20,9 +20,12 @@ namespace Tiler
         SpriteBatch spriteBatch;
 
         //start up music, for test.
-        Song startUpMusic;
+        SoundEffect startUpSound;
         private SoundEffect effect;
 
+
+        SpriteFont timerFont;
+        int remainingTime = 100;
 
         int tileWidth = 64;
         int tileHeight = 64;
@@ -139,10 +142,15 @@ namespace Tiler
             Services.AddService(Content.Load<Texture2D>(@"Tiles/tank tiles 64 x 64"));
 
             //Load the startup music.
-            this.startUpMusic = Content.Load<Song>("@Winter Game Sound Effects Wave/PS1Startup.wav");
+            this.startUpSound = Content.Load<SoundEffect>("Winter Game Sound Effects Wave/PS1Startup");
 
             //Set volume.
             MediaPlayer.Volume = 0.0f;
+
+             
+            // Create font for the timer.
+            timerFont = Content.Load<SpriteFont>("timerFont");
+
 
             // Tile References to be drawn on the Map corresponding to the entries in the defined 
             // Tile Map
@@ -249,7 +257,12 @@ namespace Tiler
                 Exit();
             }
 
-            
+            double timer = gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (gameTime.ElapsedGameTime.TotalSeconds > timer)
+            {
+                remainingTime -= 1;
+            }
 
             // TODO: Add your update logic here
 
@@ -264,7 +277,14 @@ namespace Tiler
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
+            spriteBatch.Begin();
+
+            // Draw remaining time.
+            spriteBatch.DrawString(timerFont, "Remaining Time: " + remainingTime, new Vector2(20, 20), Color.White);
+
             // TODO: Add your drawing code here
+
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }

@@ -23,7 +23,7 @@ namespace Tiler
 
             myGame = game;
 
-            myGame.Components.Add(this);
+            
             DrawOrder = 1;
 
         }
@@ -41,7 +41,7 @@ namespace Tiler
 
         public override void Update(GameTime gameTime)
         {
-            Follow(player1);
+            //Follow(player1);
 
             base.Update(gameTime);
 

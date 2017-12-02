@@ -73,3 +73,10 @@
 /processorParam:Quality=Best
 /build:Winter Game Sound Effects Wave/WTFBoom.wav
 
+#begin timerFont.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:timerFont.spritefont
+
