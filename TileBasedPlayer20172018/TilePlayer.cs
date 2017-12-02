@@ -15,16 +15,23 @@ namespace Tiler
     {
         //List<TileRef> images = new List<TileRef>() { new TileRef(15, 2, 0)};
         //TileRef currentFrame;
+
+        //public Vector2 playerVelocity;
+
+        //playerVelocity.X = (float)Math.Cos(angleOfRotation* 2 * Math.PI / 360);
+
+        //        playerVelocity.Y = (float)-Math.Sin(angleOfRotation* 2 * Math.PI / 360);
+
         int speed = 5;
         float turnspeed = 0.03f;
         public Vector2 previousPosition;
 
-        public TilePlayer(Game game, Vector2 userPosition, 
-            List<TileRef> sheetRefs, int frameWidth, int frameHeight, float layerDepth) 
+        public TilePlayer(Game game, Vector2 userPosition,
+            List<TileRef> sheetRefs, int frameWidth, int frameHeight, float layerDepth)
                 : base(game, userPosition, sheetRefs, frameWidth, frameHeight, layerDepth)
         {
             DrawOrder = 1;
-            
+
         }
 
         public void Collision(Collider c)
@@ -36,26 +43,36 @@ namespace Tiler
         public override void Update(GameTime gameTime)
         {
             previousPosition = PixelPosition;
-            if (Keyboard.GetState().IsKeyDown(Keys.D))
-            {
-                this.PixelPosition += new Vector2(1, 0) * speed;
-            }
-            if (Keyboard.GetState().IsKeyDown(Keys.A))
-            {
-                this.PixelPosition += new Vector2(-1, 0) * speed;
-            }
+
             if (Keyboard.GetState().IsKeyDown(Keys.W))
             {
                 this.PixelPosition += new Vector2(0, -1) * speed;
             }
+
+            if (Keyboard.GetState().IsKeyDown(Keys.A))
+            {
+                this.PixelPosition += new Vector2(-1, 0) * speed;
+            }
+
             if (Keyboard.GetState().IsKeyDown(Keys.S))
             {
                 this.PixelPosition += new Vector2(0, 1) * speed;
             }
+
+            if (Keyboard.GetState().IsKeyDown(Keys.D))
+            {
+                this.PixelPosition += new Vector2(1, 0) * speed;
+            }
+                    
             if (Keyboard.GetState().IsKeyDown(Keys.Q))
+            {
                 this.angleOfRotation -= turnspeed;
+            }
+
             if (Keyboard.GetState().IsKeyDown(Keys.E))
+            {
                 this.angleOfRotation += turnspeed;
+            }
 
             base.Update(gameTime);
         }
@@ -63,5 +80,5 @@ namespace Tiler
         {
             base.Draw(gameTime);
         }
-   }
+    }
 }

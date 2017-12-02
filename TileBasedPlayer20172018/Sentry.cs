@@ -12,11 +12,18 @@ namespace Tiler
 {
     class Sentry : RotatingSprite
     {
+        protected Game myGame;
+
+
         // Sentry constructor
         public Sentry(Game game, Vector2 userPosition,         
             List<TileRef> sheetRefs, int frameWidth, int frameHeight, float layerDepth) 
                 : base(game, userPosition, sheetRefs, frameWidth, frameHeight, layerDepth)
         {
+
+            myGame = game;
+
+            myGame.Components.Add(this);
             DrawOrder = 1;
 
         }
@@ -30,9 +37,18 @@ namespace Tiler
                                             p.PixelPosition, angleOfRotation, 1f);
         }
 
-                //EnemyProjectile.fire(p.position);
+        //EnemyProjectile.fire(p.position);
 
-            
+        public override void Update(GameTime gameTime)
+        {
+            Follow(player1);
+
+            base.Update(gameTime);
+
+        }
+
+
+
         }
 
     }

@@ -18,6 +18,12 @@ namespace Tiler
         SpriteBatch spriteBatch;
         int tileWidth = 64;
         int tileHeight = 64;
+
+        TilePlayer player1;
+
+        Sentry sentry1;
+
+
         List<TileRef> TileRefs = new List<TileRef>();
         List<Collider> colliders = new List<Collider>();
         string[] backTileNames = { "blue box", "pavement", "blue steel", "green box", "home" };
@@ -76,7 +82,7 @@ namespace Tiler
             //}, 64, 64, 0f));
 
             // Create a sentry for testing.
-            Services.AddService(new Sentry(this, new Vector2(64, 128), new List<TileRef>()
+            Services.AddService(sentry1 = new Sentry(this, new Vector2(64, 128), new List<TileRef>()
             {
                 new TileRef(20, 2, 0),
                 new TileRef(20, 3, 0),
@@ -85,11 +91,11 @@ namespace Tiler
                 new TileRef(20, 6, 0),
                 new TileRef(20, 7, 0),
                 new TileRef(20, 8, 0),
-            }, 64, 64, 0f)
+            }, 64, 64, 0f));
 
 
-           // When I instantiate an object by adding it as a service (As I have done above), how can I refer specifically to that object when I want it to carry out its methods?
-           // For example...
+            // When I instantiate an object by adding it as a service (As I have done above), how can I refer specifically to that object when I want it to carry out its methods?
+            // For example...
 
             // Usually it's...
             //Sentry sentry 1 = new Sentry(etcetera, etcetera);
@@ -101,8 +107,8 @@ namespace Tiler
 
             // Is there a way to give a name to this sentry after it has been instantiated?
 
-            
-            );
+
+
 
 
             SetColliders(TileType.BLUESTEEL);
@@ -179,7 +185,7 @@ namespace Tiler
 
                         // Spawn the player, the vector2 constructor takes floats only, this is why the previous step is necessary.
                         // The Vector2 constructor sets the position of the player to that of the home tile, or at least it should.
-                        Services.AddService(new TilePlayer(this, new Vector2(xFloatVer, yFloatVer), new List<TileRef>()
+                        Services.AddService(player1 = new TilePlayer(this, new Vector2(xFloatVer, yFloatVer), new List<TileRef>()
             {
                 new TileRef(15, 2, 0),
                 new TileRef(15, 3, 0),
@@ -225,7 +231,7 @@ namespace Tiler
         protected override void Update(GameTime gameTime)
         {
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
-            {
+            {             
                 Exit();
             }
 
