@@ -6,6 +6,8 @@ using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 using Tiler;
 using Tiling;
+using Microsoft.Xna.Framework.Media;
+using Microsoft.Xna.Framework.Audio;
 
 namespace Tiler
 {
@@ -19,7 +21,7 @@ namespace Tiler
 
         //start up music, for test.
         Song startUpMusic;
-        private soundEffect effect;
+        private SoundEffect effect;
 
 
         int tileWidth = 64;
