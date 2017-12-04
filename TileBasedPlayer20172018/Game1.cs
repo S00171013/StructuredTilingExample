@@ -19,7 +19,7 @@ namespace Tiler
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        //start up music, for test.
+        // start up music, for test.
         SoundEffect startUpSound;
         private SoundEffect effect;
 

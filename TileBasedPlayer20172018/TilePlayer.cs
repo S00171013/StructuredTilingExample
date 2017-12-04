@@ -10,7 +10,6 @@ using Tiling;
 
 namespace Tiler
 {
-
     public class TilePlayer : RotatingSprite
     {
         //List<TileRef> images = new List<TileRef>() { new TileRef(15, 2, 0)};
@@ -25,6 +24,8 @@ namespace Tiler
         int speed = 5;
         float turnspeed = 0.03f;
         public Vector2 previousPosition;
+
+        
 
         public TilePlayer(Game game, Vector2 userPosition,
             List<TileRef> sheetRefs, int frameWidth, int frameHeight, float layerDepth)
@@ -44,36 +45,30 @@ namespace Tiler
         {
             previousPosition = PixelPosition;
 
+            // Create direction variable.
+            Vector2 direction = new Vector2((float)Math.Cos(angleOfRotation), (float)Math.Sin(angleOfRotation));
+
             if (Keyboard.GetState().IsKeyDown(Keys.W))
             {
-                this.PixelPosition += new Vector2(0, -1) * speed;
-            }
-
-            if (Keyboard.GetState().IsKeyDown(Keys.A))
-            {
-                this.PixelPosition += new Vector2(-1, 0) * speed;
+                this.PixelPosition += direction * new Vector2(1, 1) * speed;
             }
 
             if (Keyboard.GetState().IsKeyDown(Keys.S))
             {
-                this.PixelPosition += new Vector2(0, 1) * speed;
+               
+                this.PixelPosition -= direction * new Vector2(1, 1) * speed;
             }
+
+            if (Keyboard.GetState().IsKeyDown(Keys.A))
+            {        
+                this.angleOfRotation -= turnspeed;
+            }          
 
             if (Keyboard.GetState().IsKeyDown(Keys.D))
-            {
-                this.PixelPosition += new Vector2(1, 0) * speed;
-            }
-                    
-            if (Keyboard.GetState().IsKeyDown(Keys.Q))
-            {
-                this.angleOfRotation -= turnspeed;
-            }
-
-            if (Keyboard.GetState().IsKeyDown(Keys.E))
-            {
+            {                
                 this.angleOfRotation += turnspeed;
             }
-
+                           
             base.Update(gameTime);
         }
         public override void Draw(GameTime gameTime)
