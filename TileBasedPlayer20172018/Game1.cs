@@ -18,6 +18,8 @@ namespace Tiler
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        Texture2D startUpScreen;
+        Texture2D loadingScreen;
 
         // start up music, for test.
         SoundEffect startUpSound;
@@ -38,6 +40,8 @@ namespace Tiler
         List<TileRef> TileRefs = new List<TileRef>();
         List<Collider> colliders = new List<Collider>();
         string[] backTileNames = { "blue box", "pavement", "blue steel", "green box", "home" };
+
+
         public enum TileType { BLUEBOX, PAVEMENT, BLUESTEEL, GREENBOX, HOME };
         int[,] tileMap = new int[,]
     {
@@ -65,6 +69,7 @@ namespace Tiler
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+            
         }
 
         /// <summary>
@@ -140,6 +145,12 @@ namespace Tiler
             spriteBatch = new SpriteBatch(GraphicsDevice);
             Services.AddService(spriteBatch);
             Services.AddService(Content.Load<Texture2D>(@"Tiles/tank tiles 64 x 64"));
+
+            //Loads the startup screen.
+            startUpScreen = Content.Load<Texture2D>(@"Winter Game Sprites/Insert Coin");
+
+            //Loads the loading screen and proceeds to play the startup music.
+            loadingScreen = Content.Load<Texture2D>(@"Winter Game Sprites/Loading Screen");
 
             //Load the startup music.
             this.startUpSound = Content.Load<SoundEffect>("Winter Game Sound Effects Wave/PS1Startup");
