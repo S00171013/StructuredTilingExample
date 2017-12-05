@@ -18,6 +18,8 @@ namespace Tiler
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        SplashScreen startUpScreen;
+        SplashScreen loadingScreen;
 
         // start up music, for test.
         SoundEffect startUpSound;
@@ -38,6 +40,8 @@ namespace Tiler
         List<TileRef> TileRefs = new List<TileRef>();
         List<Collider> colliders = new List<Collider>();
         string[] backTileNames = { "blue box", "pavement", "blue steel", "green box", "home" };
+
+
         public enum TileType { BLUEBOX, PAVEMENT, BLUESTEEL, GREENBOX, HOME };
         int[,] tileMap = new int[,]
     {
@@ -65,6 +69,9 @@ namespace Tiler
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+           
+            
+
         }
 
         /// <summary>
@@ -80,7 +87,7 @@ namespace Tiler
                 new Vector2(tileMap.GetLength(1) * tileWidth, tileMap.GetLength(0) * tileHeight));
 
             new InputEngine(this);
-           
+
             // Create a sentry for testing.
             Services.AddService(sentry1 = new Sentry(this, new Vector2(64, 128), new List<TileRef>()
             {
@@ -111,15 +118,52 @@ namespace Tiler
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
             Services.AddService(spriteBatch);
+            
+
+            //Initialize a 17 second timer for the loading screen.
+            float timer = 17;
+
+
+
+
+
+            //Loads the startup screen.
+            startUpScreen = new SplashScreen(Vector2.Zero, Content.Load<Texture2D>(@"Winter Game Sprites/Insert Coin"),
+                                             Content.Load<SoundEffect>(@"Winter Game Sound Effects Wave/PS1Startup"), Keys.Enter);
+
+
+
+            //Trying to get the loading screen and the startup music to activate at the same time.
+            //while under a 17 second timer (the length of the sound).
+            if (timer <= 17 )
+            {
+                //Loads the loading screen and proceeds to play the startup music.
+                loadingScreen = new SplashScreen(Vector2.Zero, Content.Load<Texture2D>(@"Winter Game Sprites/Loading Screen"),
+                                                 Content.Load<SoundEffect>(@"Winter Game Sound Effects Wave/PS1Startup"), Keys.Space);
+
+                
+                
+
+                //Set volume.
+                MediaPlayer.Volume = 0.5f;
+            }
+
+
+            //When the loading screen is finished, this should load the game.
+            else if (timer >= 17)
+            {
             Services.AddService(Content.Load<Texture2D>(@"Tiles/tank tiles 64 x 64"));
-
-            //Load the startup music.
-            this.startUpSound = Content.Load<SoundEffect>("Winter Game Sound Effects Wave/PS1Startup");
-
-            //Set volume.
-            MediaPlayer.Volume = 0.0f;
+            }
 
 
+
+           
+
+           
+
+
+
+             
             // Create font for the timer.
             timerFont = Content.Load<SpriteFont>("timerFont");
 
@@ -157,7 +201,7 @@ namespace Tiler
         // Experimenting with spawning the player on the home tile.
         public void SpawnPlayer(TileType t)
         {
-            // Declare variables 
+            
 
             // Declare bool to keep track of whether or not the home tile has been found on the map.
             bool homeTileFound = false;
@@ -180,15 +224,15 @@ namespace Tiler
                         // Spawn the player, the vector2 constructor takes floats only, this is why the previous step is necessary.
                         //The Vector2 constructor sets the position of the player to that of the home tile, or at least it should.
                         Services.AddService(player1 = new TilePlayer(this, new Vector2(xFloatVer, yFloatVer), new List<TileRef>()
-                        {
-                            new TileRef(15, 2, 0),
-                            new TileRef(15, 3, 0),
-                            new TileRef(15, 4, 0),
-                            new TileRef(15, 5, 0),
-                            new TileRef(15, 6, 0),
-                            new TileRef(15, 7, 0),
-                            new TileRef(15, 8, 0),
-                        }, 64, 64, 0f));
+            {
+                new TileRef(15, 2, 0),
+                new TileRef(15, 3, 0),
+                new TileRef(15, 4, 0),
+                new TileRef(15, 5, 0),
+                new TileRef(15, 6, 0),
+                new TileRef(15, 7, 0),
+                new TileRef(15, 8, 0),
+            }, 64, 64, 0f));
 
                         homeTileFound = true;
 
@@ -225,14 +269,33 @@ namespace Tiler
         protected override void Update(GameTime gameTime)
         {
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
-            {
+            {             
                 Exit();
             }
 
-            sentry1.Follow(player1);
+            double timer = gameTime.ElapsedGameTime.TotalSeconds;
 
+            if (gameTime.ElapsedGameTime.TotalSeconds > timer)
+            {
+                remainingTime -= 1;
+            }
+
+
+
+
+
+            //double timer = gameTime.ElapsedGameTime.TotalSeconds;
+
+            //if (gameTime.ElapsedGameTime.TotalSeconds > timer)
+            //{
+                //remainingTime -= 1;
+            //}
 
             // TODO: Add your update logic here
+
+
+
+
 
             base.Update(gameTime);
         }
@@ -255,6 +318,10 @@ namespace Tiler
             spriteBatch.End();
 
             base.Draw(gameTime);
+        }
+
+        private class SplashScreen
+        {
         }
     }
 }
