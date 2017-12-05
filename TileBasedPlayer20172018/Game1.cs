@@ -18,8 +18,8 @@ namespace Tiler
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        Texture2D startUpScreen;
-        Texture2D loadingScreen;
+        SplashScreen startUpScreen;
+        SplashScreen loadingScreen;
 
         // start up music, for test.
         SoundEffect startUpSound;
@@ -149,14 +149,15 @@ namespace Tiler
             
 
             //Initialize a 17 second timer for the loading screen.
-            float timer = 17;        
-           
+            float timer = 17;
+
 
 
 
 
             //Loads the startup screen.
-            startUpScreen = Content.Load<Texture2D>(@"Winter Game Sprites/Insert Coin");
+            startUpScreen = new SplashScreen(Vector2.Zero, Content.Load<Texture2D>(@"Winter Game Sprites/Insert Coin"),
+                                             Content.Load<SoundEffect>(@"Winter Game Sound Effects Wave/PS1Startup"), Keys.Enter);
 
 
 
@@ -165,11 +166,14 @@ namespace Tiler
             if (timer <= 17 )
             {
                 //Loads the loading screen and proceeds to play the startup music.
-                loadingScreen = Content.Load<Texture2D>(@"Winter Game Sprites/Loading Screen");
+                loadingScreen = new SplashScreen(Vector2.Zero, Content.Load<Texture2D>(@"Winter Game Sprites/Loading Screen"),
+                                                 Content.Load<SoundEffect>(@"Winter Game Sound Effects Wave/PS1Startup"), Keys.Space);
 
+                
+                
 
-                //Load the startup music.
-                this.startUpSound = Content.Load<SoundEffect>(@"Winter Game Sound Effects Wave/PS1Startup");
+                //Set volume.
+                MediaPlayer.Volume = 0.5f;
             }
 
 
@@ -185,8 +189,7 @@ namespace Tiler
 
            
 
-            //Set volume.
-            MediaPlayer.Volume = 0.0f;
+          
 
              
             // Create font for the timer.
@@ -298,6 +301,8 @@ namespace Tiler
                 Exit();
             }
 
+            //When the player presses enter on the Insert Coin screen, it should trigger the loading screen and the startup sound.
+            //We want this to only be done once.
             else if (Keyboard.GetState().IsKeyDown(Keys.Enter))
             {
 
@@ -341,6 +346,10 @@ namespace Tiler
             spriteBatch.End();
 
             base.Draw(gameTime);
+        }
+
+        private class SplashScreen
+        {
         }
     }
 }
