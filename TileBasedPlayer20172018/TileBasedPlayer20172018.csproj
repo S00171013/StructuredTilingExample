@@ -73,6 +73,8 @@
     <Content Include="Content\Winter Game Sound Effects Wave\PS1Startup.wav" />
     <Content Include="Content\Winter Game Sound Effects Wave\Steel.wav" />
     <Content Include="Content\Winter Game Sound Effects Wave\WTFBoom.wav" />
+    <Content Include="Content\Winter Game Sprites\Insert Coin.jpg" />
+    <Content Include="Content\Winter Game Sprites\Loading Screen.jpg" />
     <Content Include="Content\Winter Game Sprites\Projectile.png" />
     <Content Include="Icon.ico" />
   </ItemGroup>
