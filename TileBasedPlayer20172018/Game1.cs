@@ -69,7 +69,9 @@ namespace Tiler
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+           
             
+
         }
 
         /// <summary>
@@ -144,16 +146,44 @@ namespace Tiler
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
             Services.AddService(spriteBatch);
-            Services.AddService(Content.Load<Texture2D>(@"Tiles/tank tiles 64 x 64"));
+            
+
+            //Initialize a 17 second timer for the loading screen.
+            float timer = 17;        
+           
+
+
+
 
             //Loads the startup screen.
             startUpScreen = Content.Load<Texture2D>(@"Winter Game Sprites/Insert Coin");
 
-            //Loads the loading screen and proceeds to play the startup music.
-            loadingScreen = Content.Load<Texture2D>(@"Winter Game Sprites/Loading Screen");
 
-            //Load the startup music.
-            this.startUpSound = Content.Load<SoundEffect>("Winter Game Sound Effects Wave/PS1Startup");
+
+            //Trying to get the loading screen and the startup music to activate at the same time.
+            //while under a 17 second timer (the length of the sound).
+            if (timer <= 17 )
+            {
+                //Loads the loading screen and proceeds to play the startup music.
+                loadingScreen = Content.Load<Texture2D>(@"Winter Game Sprites/Loading Screen");
+
+
+                //Load the startup music.
+                this.startUpSound = Content.Load<SoundEffect>(@"Winter Game Sound Effects Wave/PS1Startup");
+            }
+
+
+            //When the loading screen is finished, this should load the game.
+            else if (timer >= 17)
+            {
+                Services.AddService(Content.Load<Texture2D>(@"Tiles/tank tiles 64 x 64"));
+            }
+
+
+
+           
+
+           
 
             //Set volume.
             MediaPlayer.Volume = 0.0f;
@@ -196,7 +226,7 @@ namespace Tiler
         // Experimenting with spawning the player on the home tile.
         public void SpawnPlayer(TileType t)
         {
-            // Declare variables 
+            
 
             // Declare bool to keep track of whether or not the home tile has been found on the map.
             bool homeTileFound = false;
@@ -268,14 +298,27 @@ namespace Tiler
                 Exit();
             }
 
-            double timer = gameTime.ElapsedGameTime.TotalSeconds;
-
-            if (gameTime.ElapsedGameTime.TotalSeconds > timer)
+            else if (Keyboard.GetState().IsKeyDown(Keys.Enter))
             {
-                remainingTime -= 1;
+
             }
 
+
+
+
+
+            //double timer = gameTime.ElapsedGameTime.TotalSeconds;
+
+            //if (gameTime.ElapsedGameTime.TotalSeconds > timer)
+            //{
+                //remainingTime -= 1;
+            //}
+
             // TODO: Add your update logic here
+
+
+
+
 
             base.Update(gameTime);
         }
