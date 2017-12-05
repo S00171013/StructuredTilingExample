@@ -80,46 +80,18 @@ namespace Tiler
                 new Vector2(tileMap.GetLength(1) * tileWidth, tileMap.GetLength(0) * tileHeight));
 
             new InputEngine(this);
-
-            //Services.AddService(new TilePlayer(this, new Vector2(64, 128), new List<TileRef>()
-            //{
-            //    new TileRef(15, 2, 0),
-            //    new TileRef(15, 3, 0),
-            //    new TileRef(15, 4, 0),
-            //    new TileRef(15, 5, 0),
-            //    new TileRef(15, 6, 0),
-            //    new TileRef(15, 7, 0),
-            //    new TileRef(15, 8, 0),
-            //}, 64, 64, 0f));
-
+           
             // Create a sentry for testing.
             Services.AddService(sentry1 = new Sentry(this, new Vector2(64, 128), new List<TileRef>()
             {
-                new TileRef(20, 2, 0),
-                new TileRef(20, 3, 0),
-                new TileRef(20, 4, 0),
-                new TileRef(20, 5, 0),
-                new TileRef(20, 6, 0),
-                new TileRef(20, 7, 0),
-                new TileRef(20, 8, 0),
+                new TileRef(21, 2, 0),
+                new TileRef(21, 3, 0),
+                new TileRef(21, 4, 0),
+                new TileRef(21, 5, 0),
+                new TileRef(21, 6, 0),
+                new TileRef(21, 7, 0),
+                new TileRef(21, 8, 0),
             }, 64, 64, 0f));
-
-
-            // When I instantiate an object by adding it as a service (As I have done above), how can I refer specifically to that object when I want it to carry out its methods?
-            // For example...
-
-            // Usually it's...
-            //Sentry sentry 1 = new Sentry(etcetera, etcetera);
-
-            // ...And later this...
-            //sentry1.Follow(TilePlayer player);
-
-            // But since I have already instantiated my sentry by adding it as a service with no name given to it, I am unsure on how to make this sentry carry out its methods.
-
-            // Is there a way to give a name to this sentry after it has been instantiated?
-
-
-
 
 
             SetColliders(TileType.BLUESTEEL);
@@ -147,7 +119,7 @@ namespace Tiler
             //Set volume.
             MediaPlayer.Volume = 0.0f;
 
-             
+
             // Create font for the timer.
             timerFont = Content.Load<SpriteFont>("timerFont");
 
@@ -157,7 +129,7 @@ namespace Tiler
             // "free", "pavement", "ground", "blue", "home" 
             TileRefs.Add(new TileRef(4, 2, 0));
             TileRefs.Add(new TileRef(3, 3, 1));
-            TileRefs.Add(new TileRef(6, 3, 2));
+            TileRefs.Add(new TileRef(0, 9, 0));
             TileRefs.Add(new TileRef(6, 2, 3));
             TileRefs.Add(new TileRef(0, 2, 4));
             // Names for the Tiles
@@ -206,17 +178,17 @@ namespace Tiler
                         yFloatVer = (float)y;
 
                         // Spawn the player, the vector2 constructor takes floats only, this is why the previous step is necessary.
-                        // The Vector2 constructor sets the position of the player to that of the home tile, or at least it should.
+                        //The Vector2 constructor sets the position of the player to that of the home tile, or at least it should.
                         Services.AddService(player1 = new TilePlayer(this, new Vector2(xFloatVer, yFloatVer), new List<TileRef>()
-            {
-                new TileRef(15, 2, 0),
-                new TileRef(15, 3, 0),
-                new TileRef(15, 4, 0),
-                new TileRef(15, 5, 0),
-                new TileRef(15, 6, 0),
-                new TileRef(15, 7, 0),
-                new TileRef(15, 8, 0),
-            }, 64, 64, 0f));
+                        {
+                            new TileRef(15, 2, 0),
+                            new TileRef(15, 3, 0),
+                            new TileRef(15, 4, 0),
+                            new TileRef(15, 5, 0),
+                            new TileRef(15, 6, 0),
+                            new TileRef(15, 7, 0),
+                            new TileRef(15, 8, 0),
+                        }, 64, 64, 0f));
 
                         homeTileFound = true;
 
@@ -253,16 +225,12 @@ namespace Tiler
         protected override void Update(GameTime gameTime)
         {
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
-            {             
+            {
                 Exit();
             }
 
-            double timer = gameTime.ElapsedGameTime.TotalSeconds;
+            sentry1.Follow(player1);
 
-            if (gameTime.ElapsedGameTime.TotalSeconds > timer)
-            {
-                remainingTime -= 1;
-            }
 
             // TODO: Add your update logic here
 
