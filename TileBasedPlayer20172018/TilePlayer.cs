@@ -25,6 +25,8 @@ namespace Tiler
         float turnspeed = 0.03f;
         public Vector2 previousPosition;
 
+        Texture2D Projectile;
+
         
 
         public TilePlayer(Game game, Vector2 userPosition,
@@ -32,6 +34,8 @@ namespace Tiler
                 : base(game, userPosition, sheetRefs, frameWidth, frameHeight, layerDepth)
         {
             DrawOrder = 1;
+            PixelPosition = userPosition * FrameWidth;
+
 
         }
 
@@ -45,6 +49,7 @@ namespace Tiler
         {
             previousPosition = PixelPosition;
 
+            #region Handle Input
             // Create direction variable.
             Vector2 direction = new Vector2((float)Math.Cos(angleOfRotation), (float)Math.Sin(angleOfRotation));
 
@@ -68,7 +73,8 @@ namespace Tiler
             {                
                 this.angleOfRotation += turnspeed;
             }
-                           
+            #endregion
+
             base.Update(gameTime);
         }
         public override void Draw(GameTime gameTime)

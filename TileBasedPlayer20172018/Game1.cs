@@ -18,8 +18,7 @@ namespace Tiler
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        SplashScreen startUpScreen;
-        SplashScreen loadingScreen;
+
 
         // start up music, for test.
         SoundEffect startUpSound;
@@ -34,11 +33,18 @@ namespace Tiler
 
         TilePlayer player1;
 
-        Sentry sentry1;
-
+       
 
         List<TileRef> TileRefs = new List<TileRef>();
         List<Collider> colliders = new List<Collider>();
+
+
+
+        // Create a sentry list.
+        List<Sentry> sentries = new List<Sentry>();
+
+        //Sentry sentry1;
+
         string[] backTileNames = { "blue box", "pavement", "blue steel", "green box", "home" };
 
 
@@ -69,9 +75,6 @@ namespace Tiler
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-           
-            
-
         }
 
         /// <summary>
@@ -89,22 +92,25 @@ namespace Tiler
             new InputEngine(this);
 
             // Create a sentry for testing.
-            Services.AddService(sentry1 = new Sentry(this, new Vector2(64, 128), new List<TileRef>()
-            {
-                new TileRef(21, 2, 0),
-                new TileRef(21, 3, 0),
-                new TileRef(21, 4, 0),
-                new TileRef(21, 5, 0),
-                new TileRef(21, 6, 0),
-                new TileRef(21, 7, 0),
-                new TileRef(21, 8, 0),
-            }, 64, 64, 0f));
-
+            //sentry1 = new Sentry(this, new Vector2(64, 128), new List<TileRef>()
+            //{
+            //    new TileRef(21, 2, 0),
+            //    new TileRef(21, 3, 0),
+            //    new TileRef(21, 4, 0),
+            //    new TileRef(21, 5, 0),
+            //    new TileRef(21, 6, 0),
+            //    new TileRef(21, 7, 0),
+            //    new TileRef(21, 8, 0),
+            //}, 64, 64, 0f);   
 
             SetColliders(TileType.BLUESTEEL);
             SetColliders(TileType.BLUEBOX);
 
             SpawnPlayer(TileType.HOME);
+
+            SpawnSentries(TileType.GREENBOX);
+
+            
 
             base.Initialize();
         }
@@ -118,54 +124,13 @@ namespace Tiler
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
             Services.AddService(spriteBatch);
-            
 
-            //Initialize a 17 second timer for the loading screen.
-            float timer = 17;
-
-
-
-
-
-            //Loads the startup screen.
-            startUpScreen = new SplashScreen(Vector2.Zero, Content.Load<Texture2D>(@"Winter Game Sprites/Insert Coin"),
-                                             Content.Load<SoundEffect>(@"Winter Game Sound Effects Wave/PS1Startup"), Keys.Enter);
-
-
-
-            //Trying to get the loading screen and the startup music to activate at the same time.
-            //while under a 17 second timer (the length of the sound).
-            if (timer <= 17 )
-            {
-                //Loads the loading screen and proceeds to play the startup music.
-                loadingScreen = new SplashScreen(Vector2.Zero, Content.Load<Texture2D>(@"Winter Game Sprites/Loading Screen"),
-                                                 Content.Load<SoundEffect>(@"Winter Game Sound Effects Wave/PS1Startup"), Keys.Space);
-
-                
-                
-
-                //Set volume.
-                MediaPlayer.Volume = 0.5f;
-            }
-
-
-            //When the loading screen is finished, this should load the game.
-            else if (timer >= 17)
-            {
-            Services.AddService(Content.Load<Texture2D>(@"Tiles/tank tiles 64 x 64"));
-            }
-
-
-
-           
-
-           
-
-
-
-             
             // Create font for the timer.
             timerFont = Content.Load<SpriteFont>("timerFont");
+
+
+            Texture2D tx = Content.Load<Texture2D>(@"Tiles/tank tiles 64 x 64");
+            Services.AddService(tx);
 
 
             // Tile References to be drawn on the Map corresponding to the entries in the defined 
@@ -201,8 +166,6 @@ namespace Tiler
         // Experimenting with spawning the player on the home tile.
         public void SpawnPlayer(TileType t)
         {
-            
-
             // Declare bool to keep track of whether or not the home tile has been found on the map.
             bool homeTileFound = false;
 
@@ -252,6 +215,44 @@ namespace Tiler
         }
 
 
+        public void SpawnSentries(TileType t)
+        {
+            // Declare float values to convert the x and y value of the home tile to floats. This will allow the TilePlayer constructor to take a copy of the home tile's x and y value and spawn the player on that tile.
+            float xFloatVer = 0;
+            float yFloatVer = 0;
+
+            for (int x = 0; x < tileMap.GetLength(1); x++)
+            {
+                for (int y = 0; y < tileMap.GetLength(0); y++)
+                {
+                    // If the current position on the map matches 4, the value for the home tile enumeration...
+                    if (tileMap[y, x] == (int)t)
+                    {
+                        // ...Take a copy of that position and convert the values to float.                   
+                        xFloatVer = (float)x;
+                        yFloatVer = (float)y;
+
+                        // Spawn the player, the vector2 constructor takes floats only, this is why the previous step is necessary.
+                        //The Vector2 constructor sets the position of the player to that of the home tile, or at least it should.
+                        sentries.Add(new Sentry(this, new Vector2(xFloatVer, yFloatVer), new List<TileRef>()
+            {
+                new TileRef(21, 2, 0),
+                new TileRef(21, 3, 0),
+                new TileRef(21, 4, 0),
+                new TileRef(21, 5, 0),
+                new TileRef(21, 6, 0),
+                new TileRef(21, 7, 0),
+                new TileRef(21, 8, 0),
+            }, 64, 64, 0f));
+
+                    }
+
+                }
+            }
+        }
+
+
+
         /// <summary>
         /// UnloadContent will be called once per game and is the place to unload
         /// game-specific content.
@@ -269,18 +270,18 @@ namespace Tiler
         protected override void Update(GameTime gameTime)
         {
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
-            {             
+            {
                 Exit();
             }
 
-            double timer = gameTime.ElapsedGameTime.TotalSeconds;
-
-            if (gameTime.ElapsedGameTime.TotalSeconds > timer)
+            foreach (var  item in sentries)
             {
-                remainingTime -= 1;
+                item.Follow(player1);
             }
 
+            //sentry1.Follow(player1);
 
+            //sentries.Follow(player1);
 
 
 
@@ -288,14 +289,10 @@ namespace Tiler
 
             //if (gameTime.ElapsedGameTime.TotalSeconds > timer)
             //{
-                //remainingTime -= 1;
+            //remainingTime -= 1;
             //}
 
             // TODO: Add your update logic here
-
-
-
-
 
             base.Update(gameTime);
         }
@@ -320,8 +317,5 @@ namespace Tiler
             base.Draw(gameTime);
         }
 
-        private class SplashScreen
-        {
-        }
     }
 }

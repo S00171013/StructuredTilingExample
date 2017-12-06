@@ -20,9 +20,9 @@ namespace Tiler
             List<TileRef> sheetRefs, int frameWidth, int frameHeight, float layerDepth) 
                 : base(game, userPosition, sheetRefs, frameWidth, frameHeight, layerDepth)
         {
-
             myGame = game;
 
+            PixelPosition = userPosition*frameWidth;
             
             DrawOrder = 1;
 
@@ -41,13 +41,11 @@ namespace Tiler
 
         public override void Update(GameTime gameTime)
         {
-            //Follow(player1);
+            //Follow(player);
 
             base.Update(gameTime);
 
         }
-
-
 
         }
 
