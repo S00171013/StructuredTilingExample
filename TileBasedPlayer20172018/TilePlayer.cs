@@ -64,6 +64,7 @@ namespace Tiler
             if (Keyboard.GetState().IsKeyDown(Keys.A))
             {        
                 this.angleOfRotation -= turnspeed;
+                //BoundingRectangle = angleOfRotation;
             }          
 
             if (Keyboard.GetState().IsKeyDown(Keys.D))
