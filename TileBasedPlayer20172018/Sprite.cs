@@ -106,7 +106,7 @@ namespace AnimatedSprite
             get
             {
                 return new Rectangle(PixelPosition.ToPoint(),
-                    new Point(FrameWidth , FrameHeight ));
+                    new Point(FrameWidth, FrameHeight));
             }
 
             set

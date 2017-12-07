@@ -12,22 +12,16 @@ namespace Tiler
 {
     public class TilePlayer : RotatingSprite
     {
-        //List<TileRef> images = new List<TileRef>() { new TileRef(15, 2, 0)};
-        //TileRef currentFrame;
-
-        //public Vector2 playerVelocity;
-
-        //playerVelocity.X = (float)Math.Cos(angleOfRotation* 2 * Math.PI / 360);
-
-        //        playerVelocity.Y = (float)-Math.Sin(angleOfRotation* 2 * Math.PI / 360);
-
         int speed = 5;
         float turnspeed = 0.03f;
         public Vector2 previousPosition;
 
-        Texture2D Projectile;
+        protected Game myGame;
 
-        
+        Texture2D projectileSprite;
+
+        Projectile playerProjectile;
+              
 
         public TilePlayer(Game game, Vector2 userPosition,
             List<TileRef> sheetRefs, int frameWidth, int frameHeight, float layerDepth)
@@ -36,6 +30,9 @@ namespace Tiler
             DrawOrder = 1;
             PixelPosition = userPosition * FrameWidth;
 
+            myGame = game;
+                                  
+            projectileSprite = myGame.Content.Load<Texture2D>(@"Winter Game Sprites/Projectile");   
 
         }
 
@@ -75,11 +72,29 @@ namespace Tiler
             }
             #endregion
 
+            if (Keyboard.GetState().IsKeyDown(Keys.Space))
+            {
+                playerProjectile = new Projectile(myGame, new Vector2(PixelPosition.X, PixelPosition.Y), new List<TileRef>()
+            {
+                new TileRef(0, 0, 0),
+                new TileRef(1, 0, 0),
+                new TileRef(2, 0, 0),              
+            }, 64, 64, 0f);
+
+            }
+           
             base.Update(gameTime);
         }
         public override void Draw(GameTime gameTime)
         {
+
+            //if (playerProjectile != null)
+            //{
+            //   playerProjectile.Draw(gameTime);
+            //}       
+               
             base.Draw(gameTime);
+            
         }
     }
 }

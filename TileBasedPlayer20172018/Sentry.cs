@@ -14,6 +14,7 @@ namespace Tiler
     {
         protected Game myGame;
 
+        float chaseRadius = 200;
 
         // Sentry constructor
         public Sentry(Game game, Vector2 userPosition,         
@@ -28,13 +29,28 @@ namespace Tiler
 
         }
 
+        public bool inChaseZone(TilePlayer p)
+        {
+            float distance = Math.Abs(Vector2.Distance(this.PixelPosition, p.PixelPosition));
+            if (distance <= chaseRadius)
+            {
+                return true;
+            }
+
+            else
+            {
+                return false;
+            }
+        }
+
 
         public void Follow(TilePlayer p)
         {
-            //if (inChaseZone(p) == true)
-            //{
-            this.angleOfRotation = TurnToFace(PixelPosition,
-                                            p.PixelPosition, angleOfRotation, 1f);
+            if (inChaseZone(p) == true)
+            {
+                this.angleOfRotation = TurnToFace(PixelPosition,
+                                                p.PixelPosition, angleOfRotation, 1f);
+            }
         }
 
         //EnemyProjectile.fire(p.position);
@@ -44,7 +60,6 @@ namespace Tiler
             //Follow(player);
 
             base.Update(gameTime);
-
         }
 
         }

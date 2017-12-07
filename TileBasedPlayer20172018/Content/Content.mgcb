@@ -116,3 +116,9 @@
 /processorParam:TextureFormat=Color
 /build:Winter Game Sprites/Loading Screen.jpg
 
+#begin Winter Game Music/Metal Fox.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Winter Game Music/Metal Fox.mp3
+

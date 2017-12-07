@@ -8,6 +8,7 @@ using Tiler;
 using Tiling;
 using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Audio;
+using System;
 
 namespace Tiler
 {
@@ -24,19 +25,25 @@ namespace Tiler
         SoundEffect startUpSound;
         private SoundEffect effect;
 
+        // Background Music.
+        Song backgroundMusic;
 
+
+        // Set variables for the remaining time.
         SpriteFont timerFont;
-        int remainingTime = 100;
+        TimeSpan timeSpan = TimeSpan.FromSeconds(10);
+
+        int remainingTime = 0;
 
         int tileWidth = 64;
         int tileHeight = 64;
 
         TilePlayer player1;
 
-       
-
         List<TileRef> TileRefs = new List<TileRef>();
         List<Collider> colliders = new List<Collider>();
+
+        Projectile playerProjectile;
 
 
 
@@ -110,8 +117,6 @@ namespace Tiler
 
             SpawnSentries(TileType.GREENBOX);
 
-            
-
             base.Initialize();
         }
 
@@ -145,6 +150,16 @@ namespace Tiler
 
             new SimpleTileLayer(this, backTileNames, tileMap, TileRefs, tileWidth, tileHeight);
             List<Tile> found = SimpleTileLayer.GetNamedTiles("green box");
+
+            #region Load and Play BGM.
+            // Load Background Music.
+            this.backgroundMusic = Content.Load<Song>(@"Winter Game Music/Metal Fox");
+
+            // Set volume.
+            MediaPlayer.Volume = 0.0f;
+            MediaPlayer.IsRepeating = true;
+            #endregion
+
             // TODO: use this.Content to load your game content here
         }
 
@@ -274,14 +289,32 @@ namespace Tiler
                 Exit();
             }
 
-            foreach (var  item in sentries)
+            foreach (var item in sentries)
             {
                 item.Follow(player1);
             }
 
-            //sentry1.Follow(player1);
+            if (Keyboard.GetState().IsKeyDown(Keys.Space))
+            {
+                playerProjectile = new Projectile(this, new Vector2(player1.PixelPosition.X, player1.PixelPosition.Y), new List<TileRef>()
+            {
+                new TileRef(0, 0, 0),
+                new TileRef(1, 0, 0),
+                new TileRef(2, 0, 0),
+            }, 64, 64, 0f);
+            }
 
-            //sentries.Follow(player1);
+
+            // Play background music.
+            timeSpan -= gameTime.ElapsedGameTime;
+
+
+            if (timeSpan < TimeSpan.Zero && MediaPlayer.Volume != 0.5f)
+            {
+                MediaPlayer.Play(backgroundMusic);
+                MediaPlayer.Volume += 0.5f;             
+            }
+
 
 
 
@@ -308,7 +341,7 @@ namespace Tiler
             spriteBatch.Begin();
 
             // Draw remaining time.
-            spriteBatch.DrawString(timerFont, "Remaining Time: " + remainingTime, new Vector2(20, 20), Color.White);
+            spriteBatch.DrawString(timerFont, "Remaining Time: " + remainingTime, Camera.CamPos, Color.White);
 
             // TODO: Add your drawing code here
 
