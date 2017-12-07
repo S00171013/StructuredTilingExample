@@ -98,7 +98,7 @@ namespace Tiler
 
             new InputEngine(this);
 
-           
+
 
             SetColliders(TileType.CRATES);
             SetColliders(TileType.REDWATER);
@@ -331,8 +331,11 @@ namespace Tiler
 
             spriteBatch.Begin();
 
+            //DrawString(SpriteFont spriteFont, string text, Vector2 position, Color color, float rotation, Vector2 origin, Vector2 scale, SpriteEffects effects, float layerDepth);
+
+
             // Draw remaining time.
-            spriteBatch.DrawString(timerFont, "Remaining Time: " + remainingTime, Camera.CamPos, Color.White);
+            spriteBatch.DrawString(timerFont, "Remaining Time: " + remainingTime, Camera.CamPos, Color.White, 0f, new Vector2(20,20), 1f, 0, 10f);
 
             // TODO: Add your drawing code here
 

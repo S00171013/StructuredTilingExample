@@ -25,7 +25,7 @@ namespace Tiler
 
             PixelPosition = userPosition * frameWidth;
 
-            DrawOrder = 1;
+            DrawOrder = 0;
 
         }
               

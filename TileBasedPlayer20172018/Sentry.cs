@@ -10,7 +10,7 @@ using Tiling;
 
 namespace Tiler
 {
-    class Sentry : RotatingSprite
+    public class Sentry : RotatingSprite
     {
         protected Game myGame;
 

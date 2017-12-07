@@ -42,6 +42,13 @@ namespace Tiler
                 PixelPosition = previousPosition;
         }
 
+        public void CollisionSentry(Sentry s)
+        {
+            if (BoundingRectangle.Intersects(s.BoundingRectangle))
+                PixelPosition = previousPosition;
+        }
+
+
         public override void Update(GameTime gameTime)
         {
             previousPosition = PixelPosition;
