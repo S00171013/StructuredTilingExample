@@ -101,7 +101,7 @@ namespace AnimatedSprite
             }
         }
 
-        public Rectangle BoundingRectangle
+        public Rectangle BoundingRectangle 
         {
             get
             {
