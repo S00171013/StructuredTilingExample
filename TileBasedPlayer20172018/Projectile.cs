@@ -34,7 +34,12 @@ namespace Tiler
         {                     
             base.Update(gameTime);
         }
-      
+
+        public override void Draw(GameTime gameTime)
+        {
+            base.Draw(gameTime);
+        }
+
 
     }
 

@@ -50,6 +50,7 @@
     <Compile Include="InputEngine.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Projectile.cs" />
+    <Compile Include="SuperProjectile.cs" />
     <Compile Include="Worthless.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="rotatingSprite.cs" />

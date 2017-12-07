@@ -21,6 +21,23 @@ namespace Tiler
         Texture2D projectileSprite;
 
         Projectile playerProjectile;
+
+        private SuperProjectile mySuperProjectile;
+
+        public SuperProjectile MySuperProjectile
+        {
+            get
+            {
+                return mySuperProjectile;
+            }
+
+            set
+            {
+                mySuperProjectile = value;
+            }
+        }
+        
+
               
 
         public TilePlayer(Game game, Vector2 userPosition,
@@ -36,16 +53,32 @@ namespace Tiler
 
         }
 
+
+
         public void Collision(Collider c)
         {
             if (BoundingRectangle.Intersects(c.CollisionField))
+            {
                 PixelPosition = previousPosition;
+            }
         }
 
         public void CollisionSentry(Sentry s)
         {
             if (BoundingRectangle.Intersects(s.BoundingRectangle))
+            {
                 PixelPosition = previousPosition;
+            }
+
+            if (MySuperProjectile.BoundingRectangle.Intersects(s.BoundingRectangle))
+            {
+                MySuperProjectile.ProjectileState = SuperProjectile.PROJECTILE_STATE.EXPLODING;
+            }
+        }
+
+        public void loadProjectile(SuperProjectile r)
+        {
+            MySuperProjectile = r;
         }
 
 
@@ -80,29 +113,55 @@ namespace Tiler
             }
             #endregion
 
-            if (Keyboard.GetState().IsKeyDown(Keys.Space))
+            #region Handle Projectile
+            if (MySuperProjectile != null && MySuperProjectile.ProjectileState == SuperProjectile.PROJECTILE_STATE.STILL)
             {
-                playerProjectile = new Projectile(myGame, new Vector2(PixelPosition.X, PixelPosition.Y), new List<TileRef>()
-            {
-                new TileRef(0, 0, 0),
-                new TileRef(1, 0, 0),
-                new TileRef(2, 0, 0),              
-            }, 64, 64, 0f);
-
+                MySuperProjectile.PixelPosition = this.PixelPosition;
             }
-           
+
+            if (MySuperProjectile != null)
+            {
+                // fire the rocket and it looks for the target
+                if (Keyboard.GetState().IsKeyDown(Keys.Space) && MySuperProjectile.ProjectileState == SuperProjectile.PROJECTILE_STATE.STILL)
+                {
+                    MySuperProjectile.Fire(direction);
+                }
+            }
+
+            if (MySuperProjectile != null)
+            {
+                MySuperProjectile.Update(gameTime);
+            }
+
+            #endregion
+
+            //if (Keyboard.GetState().IsKeyDown(Keys.Space))
+            //{
+            //    playerProjectile = new Projectile(myGame, new Vector2(PixelPosition.X, PixelPosition.Y), new List<TileRef>()
+            //{
+            //    new TileRef(0, 0, 0),
+            //    new TileRef(1, 0, 0),
+            //    new TileRef(2, 0, 0),              
+            //}, 64, 64, 0f);
+
             base.Update(gameTime);
         }
         public override void Draw(GameTime gameTime)
         {
+            base.Draw(gameTime);
+
+            if (MySuperProjectile != null && MySuperProjectile.ProjectileState != SuperProjectile.PROJECTILE_STATE.STILL)
+            {
+                MySuperProjectile.Draw(gameTime);
+            }
 
             //if (playerProjectile != null)
             //{
             //   playerProjectile.Draw(gameTime);
             //}       
-               
-            base.Draw(gameTime);
-            
+
+
+
         }
     }
 }

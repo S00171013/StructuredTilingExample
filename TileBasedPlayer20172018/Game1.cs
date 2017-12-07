@@ -43,6 +43,10 @@ namespace Tiler
         List<TileRef> TileRefs = new List<TileRef>();
         List<Collider> colliders = new List<Collider>();
 
+        List<Collider> projectileColliders = new List<Collider>();
+
+
+
         Projectile playerProjectile;
 
 
@@ -98,13 +102,19 @@ namespace Tiler
 
             new InputEngine(this);
 
-
-
             SetColliders(TileType.CRATES);
             SetColliders(TileType.REDWATER);
             SetColliders(TileType.EXIT);
+
             SpawnPlayer(TileType.HOME);
             SpawnSentries(TileType.SENTRY);
+
+            player1.loadProjectile(new SuperProjectile(this, player1.PixelPosition, new List<TileRef>()
+            {
+                new TileRef(0, 0, 0),
+                new TileRef(1, 0, 0),
+                new TileRef(2, 0, 0),
+            }, 64, 64, 0f));
 
             base.Initialize();
         }
@@ -159,13 +169,21 @@ namespace Tiler
             for (int x = 0; x < tileMap.GetLength(1); x++)
                 for (int y = 0; y < tileMap.GetLength(0); y++)
                 {
-                    if (tileMap[y, x] == (int)t)
+                    if (tileMap[y, x] == 2)
+                    {
+                        projectileColliders.Add(new Collider(this,
+                            Content.Load<Texture2D>(@"Tiles/collider"),
+                            x, y
+                            ));
+                    }
+
+                    else if (tileMap[y, x] == (int)t)
                     {
                         colliders.Add(new Collider(this,
                             Content.Load<Texture2D>(@"Tiles/collider"),
                             x, y
                             ));
-                    }
+                    }                   
                 }
         }
 
@@ -283,7 +301,15 @@ namespace Tiler
             foreach (var item in sentries)
             {
                 item.Follow(player1);
+                player1.CollisionSentry(item);
             }
+
+            foreach (var item in projectileColliders)
+            {
+                player1.MySuperProjectile.WallCollision(item);
+            }
+            
+            
 
             if (Keyboard.GetState().IsKeyDown(Keys.Space))
             {
@@ -291,8 +317,8 @@ namespace Tiler
             {
                 new TileRef(0, 0, 0),
                 new TileRef(1, 0, 0),
-                new TileRef(2, 0, 0),
             }, 64, 64, 0f);
+
             }
 
 
