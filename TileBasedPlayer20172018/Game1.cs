@@ -45,12 +45,6 @@ namespace Tiler
 
         List<Collider> projectileColliders = new List<Collider>();
 
-
-
-        
-
-
-
         // Create a sentry list.
         List<Sentry> sentries = new List<Sentry>();
 
@@ -111,9 +105,7 @@ namespace Tiler
 
             player1.loadProjectile(new SuperProjectile(this, player1.PixelPosition, new List<TileRef>()
             {
-                new TileRef(0, 0, 0),
-                new TileRef(1, 0, 0),
-                new TileRef(2, 0, 0),
+                new TileRef(4, 0, 0)               
             }, 64, 64, 0f));
 
             base.Initialize();

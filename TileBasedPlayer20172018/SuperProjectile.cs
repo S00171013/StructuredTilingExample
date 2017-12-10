@@ -23,7 +23,7 @@ namespace Tiler
         Vector2 Target;
         AnimateSheetSprite explosion;
         float ExplosionTimer = 0;
-        float ExplosionVisibleLimit = 1000;
+        float ExplosionVisibleLimit = 500;
         Vector2 StartPosition;
 
         Vector2 explosionLocation;
@@ -45,15 +45,18 @@ namespace Tiler
             : base(game, userPosition, sheetRefs, frameWidth, frameHeight, layerDepth)
         {
             Target = Vector2.Zero;
-           
+
             myGame = game;
 
             explosion = new AnimateSheetSprite(myGame, explosionLocation, new List<TileRef>()
             {
-                new TileRef(2, 0, 0),             
+                new TileRef(7, 0, 0),
+                new TileRef(8, 0, 0),
+                new TileRef(2, 0, 0),
             }, 64, 64, 0f);
 
-            explosion.Visible = false;
+
+            
 
             //initialPosition = new Vector2(20, 20);
 
@@ -64,7 +67,6 @@ namespace Tiler
             //StartPosition = position;
             //PixelPosition = initialPosition;
             ProjectileState = PROJECTILE_STATE.STILL;
-
         }
 
         public void WallCollision(Collider c)
@@ -74,9 +76,6 @@ namespace Tiler
                 ProjectileState = PROJECTILE_STATE.STILL;
             }
         }
-
-
-
 
         public override void Update(GameTime gametime)
         {
@@ -99,31 +98,38 @@ namespace Tiler
 
                     if (Vector2.Distance(PixelPosition, Target) <= 2f)
                     {
-                        explosionLocation = PixelPosition;
+                        //explosion.PixelPosition += new Vector2(PixelPosition.X, PixelPosition.Y);
+                        explosion.Visible = true;
                         projectileState = PROJECTILE_STATE.EXPLODING;
                     }
                     break;
 
                 case PROJECTILE_STATE.EXPLODING:
+
                     explosion.Visible = true;
-                    explosion.PixelPosition = explosionLocation; 
-                   break;
+                    explosion.PixelPosition = PixelPosition;
+                    //explosion.PixelPosition = explosionLocation;
+
+                    break;
             }
 
             // if the explosion is visible then just play the animation and count the timer
-            if (explosion.Visible)
+            if (explosion != null)
             {
-               explosion.Update(gametime);
-            //    ExplosionTimer += gametime.ElapsedGameTime.Milliseconds;
+                if (explosion.Visible)
+                {
+                    explosion.Update(gametime);
+                    ExplosionTimer += gametime.ElapsedGameTime.Milliseconds;
+                }
             }
 
-            //// if the timer goes off the explosion is finished.
-            //if (ExplosionTimer > ExplosionVisibleLimit)
-            //{
-            //    explosion.Visible = false;
-            //    ExplosionTimer = 0;
-            //    projectileState = PROJECTILE_STATE.STILL;
-            //}
+            // if the timer goes off the explosion is finished.
+            if (ExplosionTimer > ExplosionVisibleLimit)
+            {
+                //explosion.Visible = false;
+                ExplosionTimer = 0;
+                projectileState = PROJECTILE_STATE.STILL;
+            }
 
             base.Update(gametime);
         }
@@ -135,7 +141,7 @@ namespace Tiler
             projectileState = PROJECTILE_STATE.FIRING;
 
             //this.PixelPosition += direction * new Vector2(1, 1) * speed;
-        
+
         }
         public override void Draw(GameTime gameTime)
         {
@@ -144,10 +150,12 @@ namespace Tiler
             //spriteBatch.Draw(spriteImage, position, SourceRectangle,Color.White);
             //spriteBatch.End();
 
-            if (explosion.Visible == true)
+
+            if (explosion.Visible)
             {
                 explosion.Draw(gameTime);
             }
+
 
             //if (explosion.Visible)
             //{

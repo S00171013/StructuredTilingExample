@@ -42,10 +42,7 @@ namespace Tiler
             DrawOrder = 1;
             PixelPosition = userPosition * FrameWidth;
 
-            myGame = game;
-                                  
-            projectileSprite = myGame.Content.Load<Texture2D>(@"Winter Game Sprites/Projectile");   
-
+            myGame = game;                                          
         }
 
 
@@ -67,7 +64,7 @@ namespace Tiler
 
             if (MySuperProjectile.BoundingRectangle.Intersects(s.BoundingRectangle))
             {
-                MySuperProjectile.ProjectileState = SuperProjectile.PROJECTILE_STATE.STILL;
+                MySuperProjectile.ProjectileState = SuperProjectile.PROJECTILE_STATE.EXPLODING;
             }
         }
 
@@ -116,7 +113,7 @@ namespace Tiler
 
             if (MySuperProjectile != null)
             {
-                // fire the rocket and it looks for the target
+                // fire the rocket in the direction the player is pointing.
                 if (Keyboard.GetState().IsKeyDown(Keys.Space) && MySuperProjectile.ProjectileState == SuperProjectile.PROJECTILE_STATE.STILL)
                 {
                     MySuperProjectile.Fire(direction);
@@ -127,7 +124,6 @@ namespace Tiler
             {
                 MySuperProjectile.Update(gameTime);
             }
-
             #endregion          
 
             base.Update(gameTime);
