@@ -57,7 +57,7 @@ namespace Tiler
 
         public override void Update(GameTime gameTime)
         {
-            //Follow(player);
+            //Follow(player);          
 
             base.Update(gameTime);
         }

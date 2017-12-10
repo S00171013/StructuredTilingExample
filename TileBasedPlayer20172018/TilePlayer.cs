@@ -33,7 +33,7 @@ namespace Tiler
             {
                 mySuperProjectile = value;
             }
-        }                 
+        }
 
         public TilePlayer(Game game, Vector2 userPosition,
             List<TileRef> sheetRefs, int frameWidth, int frameHeight, float layerDepth)
@@ -42,7 +42,7 @@ namespace Tiler
             DrawOrder = 1;
             PixelPosition = userPosition * FrameWidth;
 
-            myGame = game;                                          
+            myGame = game;
         }
 
 
@@ -65,8 +65,30 @@ namespace Tiler
             if (MySuperProjectile.BoundingRectangle.Intersects(s.BoundingRectangle) && MySuperProjectile.Visible == true)
             {
                 MySuperProjectile.ProjectileState = SuperProjectile.PROJECTILE_STATE.EXPLODING;
+                s.Health -= 50;
+
+                //if (s.Health <= 0)
+                //{
+                //    s.Visible = false;
+                //}
             }
         }
+
+        public void CollisionLock(Lock l)
+        {
+            if (BoundingRectangle.Intersects(l.BoundingRectangle) && l.Visible == true)
+            {
+                PixelPosition = previousPosition;
+            }
+
+            if (l.open == true)
+            {
+                l.Visible = false;
+            }
+        }
+
+
+
 
         public void loadProjectile(SuperProjectile r)
         {
@@ -89,18 +111,18 @@ namespace Tiler
 
             if (Keyboard.GetState().IsKeyDown(Keys.S))
             {
-               
+
                 this.PixelPosition -= direction * new Vector2(1, 1) * speed;
             }
 
             if (Keyboard.GetState().IsKeyDown(Keys.A))
-            {        
+            {
                 this.angleOfRotation -= turnspeed;
                 //BoundingRectangle = angleOfRotation;
-            }          
+            }
 
             if (Keyboard.GetState().IsKeyDown(Keys.D))
-            {                
+            {
                 this.angleOfRotation += turnspeed;
             }
             #endregion
@@ -135,7 +157,7 @@ namespace Tiler
             if (MySuperProjectile != null && MySuperProjectile.ProjectileState != SuperProjectile.PROJECTILE_STATE.STILL)
             {
                 MySuperProjectile.Draw(gameTime);
-            }        
+            }
         }
     }
 }

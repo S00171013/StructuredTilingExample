@@ -48,6 +48,7 @@
     <Compile Include="Game1.cs" />
     <Compile Include="HealthBar.cs" />
     <Compile Include="InputEngine.cs" />
+    <Compile Include="Lock.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="SuperProjectile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

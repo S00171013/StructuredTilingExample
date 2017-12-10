@@ -9,6 +9,7 @@ using Tiling;
 using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Audio;
 using System;
+using System.Linq;
 
 namespace Tiler
 {
@@ -17,43 +18,61 @@ namespace Tiler
     /// </summary>
     public class Game1 : Game
     {
+        // 2D Games Programming Assessment December 2017
+        // By Jack Gilmartin & Donnacha Fallon.
+        // 10th December 2017.
+
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-
+        #region Declare Sound Effects and Song
         // start up music, for test.
         SoundEffect startUpSound;
         private SoundEffect effect;
 
         // Background Music.
         Song backgroundMusic;
-
+        #endregion
 
         // Set variables for the remaining time.
         SpriteFont timerFont;
-        TimeSpan timeSpan = TimeSpan.FromSeconds(10);
-
         int remainingTime = 0;
 
+        // Test TimeSpan.
+        TimeSpan timeSpan = TimeSpan.FromSeconds(10);
+
+        // Set the width and height of the tiles.
         int tileWidth = 64;
         int tileHeight = 64;
 
+        // Declare TilePlayer.
         TilePlayer player1;
 
+        // Create Tile List.
         List<TileRef> TileRefs = new List<TileRef>();
+
+        // Create Collider List.
         List<Collider> colliders = new List<Collider>();
 
+        // Create Collider list for the player's projectile.
         List<Collider> projectileColliders = new List<Collider>();
 
         // Create a sentry list.
         List<Sentry> sentries = new List<Sentry>();
 
-        //Sentry sentry1;
+        // Testing removing sentries.
+        List<Sentry> killList = new List<Sentry>();
 
-        string[] backTileNames = { "crates", "pavement", "red water", "sentry", "home", "exit", "skull" };
+        int sentryCount = 0;
+        int killCount = 0;
+
+        // Create a lock list.
+        List<Lock> locks = new List<Lock>();
 
 
-        public enum TileType { CRATES, PAVEMENT, REDWATER, SENTRY, HOME, EXIT, SKULL };
+        string[] backTileNames = { "crates", "pavement", "red water", "sentry", "home", "exit", "skull", "locked" };
+
+        public enum TileType { CRATES, PAVEMENT, REDWATER, SENTRY, HOME, EXIT, SKULL, LOCKED };
         int[,] tileMap = new int[,]
     {
         {2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2},
@@ -71,9 +90,9 @@ namespace Tiler
         {2,1,1,1,2,2,0,3,0,2,2,2,2,2,2,2,2,2,2,2,6,6,6,6,6,0,0,6,6,6,6,6,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2},
         {2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1,6,6,6,6,6,6,6,6,6,6,6,6,1,2,2,2,2,2,2,2,2,1,1,2,2,2,2,2,2,2,2,2},
         {2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1,1,6,6,6,6,6,6,6,6,6,6,6,6,1,1,2,2,2,2,2,2,2,1,1,2,2,2,2,2,2,2,2,2},
-        {1,1,2,2,1,1,1,1,3,1,1,3,1,1,3,1,1,1,1,1,6,2,6,6,2,6,6,2,6,6,2,6,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2},
-        {1,1,2,2,1,1,1,1,3,1,1,3,1,1,3,1,1,1,1,1,3,2,6,6,2,3,6,2,6,3,2,6,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2},
-        {2,2,3,2,2,2,2,2,2,2,2,3,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,3,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2},
+        {6,7,7,7,1,1,1,1,3,1,1,3,1,1,3,1,1,1,1,1,6,2,6,6,2,6,6,2,6,6,2,6,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2},
+        {7,7,7,7,1,1,1,1,3,1,1,3,1,1,3,1,1,1,1,1,3,2,6,6,2,3,6,2,6,3,2,6,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2},
+        {2,2,2,2,2,2,2,2,3,2,2,3,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,3,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2},
         {2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2},
     };
         public Game1()
@@ -96,16 +115,21 @@ namespace Tiler
 
             new InputEngine(this);
 
+            #region Set Colliders
             SetColliders(TileType.CRATES);
             SetColliders(TileType.REDWATER);
             SetColliders(TileType.EXIT);
+            #endregion
+
 
             SpawnPlayer(TileType.HOME);
             SpawnSentries(TileType.SENTRY);
 
+            SpawnLocks(TileType.LOCKED);
+
             player1.loadProjectile(new SuperProjectile(this, player1.PixelPosition, new List<TileRef>()
             {
-                new TileRef(4, 0, 0)               
+                new TileRef(4, 0, 0)
             }, 64, 64, 0f));
 
             base.Initialize();
@@ -124,14 +148,15 @@ namespace Tiler
             // Create font for the timer.
             timerFont = Content.Load<SpriteFont>("timerFont");
 
-
+            // Load in the tile sheet.
             Texture2D tx = Content.Load<Texture2D>(@"Tiles/tank tiles 64 x 64");
             Services.AddService(tx);
 
 
             // Tile References to be drawn on the Map corresponding to the entries in the defined 
             // Tile Map
-            // "free", "pavement", "ground", "blue", "home", "exit" 
+
+            // "crates", "pavement", "red water", "sentry", "home", "exit", "skull", locked".
             TileRefs.Add(new TileRef(11, 1, 0));
             TileRefs.Add(new TileRef(3, 3, 1));
             TileRefs.Add(new TileRef(0, 9, 0));
@@ -139,6 +164,7 @@ namespace Tiler
             TileRefs.Add(new TileRef(0, 2, 4));
             TileRefs.Add(new TileRef(1, 2, 0));
             TileRefs.Add(new TileRef(6, 11, 0));
+            TileRefs.Add(new TileRef(5, 3, 0));
             // Names for the Tiles
 
             new SimpleTileLayer(this, backTileNames, tileMap, TileRefs, tileWidth, tileHeight);
@@ -179,7 +205,7 @@ namespace Tiler
                 }
         }
 
-        // Experimenting with spawning the player on the home tile.
+
         public void SpawnPlayer(TileType t)
         {
             // Declare bool to keep track of whether or not the home tile has been found on the map.
@@ -199,6 +225,7 @@ namespace Tiler
                         // ...Take a copy of that position and convert the values to float.                   
                         xFloatVer = (float)x;
                         yFloatVer = (float)y;
+
 
                         // Spawn the player, the vector2 constructor takes floats only, this is why the previous step is necessary.
                         //The Vector2 constructor sets the position of the player to that of the home tile.
@@ -261,13 +288,43 @@ namespace Tiler
                 new TileRef(21, 8, 0),
             }, 64, 64, 0f));
 
+                        sentryCount++;
                     }
 
                 }
             }
         }
 
+        public void SpawnLocks(TileType t)
+        {
+            // Declare float values to convert the x and y value of the home tile to floats. This will allow the TilePlayer constructor to take a copy of the home tile's x and y value and spawn the player on that tile.
+            float xFloatVer = 0;
+            float yFloatVer = 0;
 
+            for (int x = 0; x < tileMap.GetLength(1); x++)
+            {
+                for (int y = 0; y < tileMap.GetLength(0); y++)
+                {
+                    // If the current position on the map matches 4, the value for the home tile enumeration...
+                    if (tileMap[y, x] == (int)t)
+                    {
+                        // ...Take a copy of that position and convert the values to float.                   
+                        xFloatVer = (float)x;
+                        yFloatVer = (float)y;
+
+                        // Spawn the player, the vector2 constructor takes floats only, this is why the previous step is necessary.
+                        //The Vector2 constructor sets the position of the player to that of the home tile.
+                        locks.Add(new Lock(this, new Vector2(xFloatVer, yFloatVer), new List<TileRef>()
+            {
+                new TileRef(11, 2, 0),
+
+            }, 64, 64, 0f));
+
+                    }
+
+                }
+            }
+        }
 
         /// <summary>
         /// UnloadContent will be called once per game and is the place to unload
@@ -290,17 +347,58 @@ namespace Tiler
                 Exit();
             }
 
+            #region Handle behaviour between player and sentry.
             foreach (var item in sentries)
             {
                 item.Follow(player1);
-                player1.CollisionSentry(item);
+
+                if (item.Visible == true)
+                {
+                    player1.CollisionSentry(item);
+                }
+
+                if (item.Health <= 0)
+                {
+                    if (item.Visible == true)
+                    {
+                        killCount++;
+                    }
+
+                    item.Visible = false;
+                }               
             }
+            #endregion
+
+            foreach (Lock collisionLock in locks)
+            {
+                player1.CollisionLock(collisionLock);
+            }
+
+            // What to do when all sentries have been destroyed.
+            if (killCount == sentryCount)
+            {
+                MediaPlayer.Volume -= 0.4f;
+
+                foreach(Lock item in locks)
+                {
+                    item.Visible = false;
+                }
+            }
+
+            // Attempt 2
+            //IEnumerable<Sentry> killList = sentries.Where(s => s.Health <= 0);
+
+            //foreach(Sentry s in killList)
+            //{
+            //    sentries.Remove(s);
+            //}
 
             foreach (var item in projectileColliders)
             {
                 player1.MySuperProjectile.WallCollision(item);
             }
 
+            #region Play background music when test timer is up.
             // Play background music.
             timeSpan -= gameTime.ElapsedGameTime;
 
@@ -309,16 +407,9 @@ namespace Tiler
                 MediaPlayer.Play(backgroundMusic);
                 MediaPlayer.Volume += 0.5f;
             }
+            #endregion
 
             base.Update(gameTime);
-
-            //double timer = gameTime.ElapsedGameTime.TotalSeconds;
-
-            //if (gameTime.ElapsedGameTime.TotalSeconds > timer)
-            //{
-            //remainingTime -= 1;
-            //}
-
             // TODO: Add your update logic here           
 
             /// <summary>
@@ -329,22 +420,22 @@ namespace Tiler
 
 
         protected override void Draw(GameTime gameTime)
-{
-    GraphicsDevice.Clear(Color.Maroon);
+        {
+            GraphicsDevice.Clear(Color.Maroon);
 
-    spriteBatch.Begin();
+            spriteBatch.Begin();
 
-    //DrawString(SpriteFont spriteFont, string text, Vector2 position, Color color, float rotation, Vector2 origin, Vector2 scale, SpriteEffects effects, float layerDepth);
+            //DrawString(SpriteFont spriteFont, string text, Vector2 position, Color color, float rotation, Vector2 origin, Vector2 scale, SpriteEffects effects, float layerDepth);
 
-    // Draw remaining time.
-    spriteBatch.DrawString(timerFont, "Remaining Time: " + remainingTime, Camera.CamPos, Color.White, 0f, new Vector2(20, 20), 1f, 0, 10f);
+            // Draw remaining time.
+            spriteBatch.DrawString(timerFont, "Remaining Time: " + remainingTime, Camera.CamPos, Color.White, 0f, new Vector2(20, 20), 1f, 0, 10f);
 
-    // TODO: Add your drawing code here
+            // TODO: Add your drawing code here
 
-    spriteBatch.End();
+            spriteBatch.End();
 
-    base.Draw(gameTime);
-}
+            base.Draw(gameTime);
+        }
 
     }
 }
