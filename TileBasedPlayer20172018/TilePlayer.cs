@@ -62,7 +62,7 @@ namespace Tiler
                 PixelPosition = previousPosition;
             }
 
-            if (MySuperProjectile.BoundingRectangle.Intersects(s.BoundingRectangle))
+            if (MySuperProjectile.BoundingRectangle.Intersects(s.BoundingRectangle) && MySuperProjectile.Visible == true)
             {
                 MySuperProjectile.ProjectileState = SuperProjectile.PROJECTILE_STATE.EXPLODING;
             }

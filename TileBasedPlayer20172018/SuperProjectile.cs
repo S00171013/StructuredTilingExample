@@ -25,8 +25,10 @@ namespace Tiler
         float ExplosionTimer = 0;
         float ExplosionVisibleLimit = 500;
         Vector2 StartPosition;
-
         Vector2 explosionLocation;
+
+        // Set timer for how long an explosion is on screen.
+        TimeSpan explosionTime = TimeSpan.FromSeconds(2);
 
 
         public PROJECTILE_STATE ProjectileState
@@ -84,6 +86,7 @@ namespace Tiler
                 case PROJECTILE_STATE.STILL:
                     this.Visible = false;
                     explosion.Visible = false;
+                    explosionTime = TimeSpan.FromSeconds(2);            
                     break;
 
                 // Using Lerp here could use target - pos and normalise for direction and then apply
@@ -99,37 +102,50 @@ namespace Tiler
                     if (Vector2.Distance(PixelPosition, Target) <= 2f)
                     {
                         //explosion.PixelPosition += new Vector2(PixelPosition.X, PixelPosition.Y);
-                        explosion.Visible = true;
+                        explosion.Visible = true;                     
                         projectileState = PROJECTILE_STATE.EXPLODING;
                     }
                     break;
 
-                case PROJECTILE_STATE.EXPLODING:
-
+                case PROJECTILE_STATE.EXPLODING:                   
                     explosion.Visible = true;
                     explosion.PixelPosition = PixelPosition;
                     //explosion.PixelPosition = explosionLocation;
-
                     break;
             }
 
-            // if the explosion is visible then just play the animation and count the timer
-            if (explosion != null)
+            if(projectileState == PROJECTILE_STATE.EXPLODING)
             {
-                if (explosion.Visible)
+                explosion.Update(gametime);
+                explosionTime -= gametime.ElapsedGameTime;
+
+                if (explosionTime <= TimeSpan.Zero)
                 {
-                    explosion.Update(gametime);
-                    ExplosionTimer += gametime.ElapsedGameTime.Milliseconds;
+                    explosion.Visible = false;
+                    projectileState = PROJECTILE_STATE.STILL;
                 }
             }
 
-            // if the timer goes off the explosion is finished.
-            if (ExplosionTimer > ExplosionVisibleLimit)
-            {
-                //explosion.Visible = false;
-                ExplosionTimer = 0;
-                projectileState = PROJECTILE_STATE.STILL;
-            }
+            
+        
+
+            //// if the explosion is visible then just play the animation and count the timer
+            //if (explosion != null)
+            //{
+            //    if (explosion.Visible)
+            //    {
+            //        explosion.Update(gametime);
+            //        ExplosionTimer += gametime.ElapsedGameTime.Milliseconds;
+            //    }
+            //}
+
+            //// if the timer goes off the explosion is finished.
+            //if (ExplosionTimer > ExplosionVisibleLimit)
+            //{
+            //    //explosion.Visible = false;
+            //    ExplosionTimer = 0;
+            //    projectileState = PROJECTILE_STATE.STILL;
+            //}
 
             base.Update(gametime);
         }
