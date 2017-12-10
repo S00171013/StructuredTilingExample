@@ -49,9 +49,7 @@
     <Compile Include="HealthBar.cs" />
     <Compile Include="InputEngine.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="Projectile.cs" />
     <Compile Include="SuperProjectile.cs" />
-    <Compile Include="Worthless.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="rotatingSprite.cs" />
     <Compile Include="Sentry.cs" />
@@ -75,7 +73,11 @@
     <Content Include="Content\Winter Game Sound Effects Wave\Alert.wav" />
     <Content Include="Content\Winter Game Sound Effects Wave\BallsOfSteel.wav" />
     <Content Include="Content\Winter Game Sound Effects Wave\Noooo.wav" />
+    <Content Include="Content\Winter Game Sound Effects Wave\PlayerExplosion.wav" />
+    <Content Include="Content\Winter Game Sound Effects Wave\PlayerFire.wav" />
     <Content Include="Content\Winter Game Sound Effects Wave\PS1Startup.wav" />
+    <Content Include="Content\Winter Game Sound Effects Wave\SentryExplosion.wav" />
+    <Content Include="Content\Winter Game Sound Effects Wave\SentryFire.wav" />
     <Content Include="Content\Winter Game Sound Effects Wave\Steel.wav" />
     <Content Include="Content\Winter Game Sound Effects Wave\WTFBoom.wav" />
     <Content Include="Content\Winter Game Sprites\Insert Coin.jpg" />

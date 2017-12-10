@@ -122,3 +122,27 @@
 /processorParam:Quality=Best
 /build:Winter Game Music/Metal Fox.mp3
 
+#begin Winter Game Sound Effects Wave/PlayerFire.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Winter Game Sound Effects Wave/PlayerFire.wav
+
+#begin Winter Game Sound Effects Wave/SentryFire.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Winter Game Sound Effects Wave/SentryFire.wav
+
+#begin Winter Game Sound Effects Wave/PlayerExplosion.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Winter Game Sound Effects Wave/PlayerExplosion.wav
+
+#begin Winter Game Sound Effects Wave/SentryExplosion.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Winter Game Sound Effects Wave/SentryExplosion.wav
+

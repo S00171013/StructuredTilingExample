@@ -20,8 +20,6 @@ namespace Tiler
 
         Texture2D projectileSprite;
 
-        Projectile playerProjectile;
-
         private SuperProjectile mySuperProjectile;
 
         public SuperProjectile MySuperProjectile
@@ -35,10 +33,7 @@ namespace Tiler
             {
                 mySuperProjectile = value;
             }
-        }
-        
-
-              
+        }                 
 
         public TilePlayer(Game game, Vector2 userPosition,
             List<TileRef> sheetRefs, int frameWidth, int frameHeight, float layerDepth)
@@ -72,7 +67,7 @@ namespace Tiler
 
             if (MySuperProjectile.BoundingRectangle.Intersects(s.BoundingRectangle))
             {
-                MySuperProjectile.ProjectileState = SuperProjectile.PROJECTILE_STATE.EXPLODING;
+                MySuperProjectile.ProjectileState = SuperProjectile.PROJECTILE_STATE.STILL;
             }
         }
 
@@ -133,16 +128,7 @@ namespace Tiler
                 MySuperProjectile.Update(gameTime);
             }
 
-            #endregion
-
-            //if (Keyboard.GetState().IsKeyDown(Keys.Space))
-            //{
-            //    playerProjectile = new Projectile(myGame, new Vector2(PixelPosition.X, PixelPosition.Y), new List<TileRef>()
-            //{
-            //    new TileRef(0, 0, 0),
-            //    new TileRef(1, 0, 0),
-            //    new TileRef(2, 0, 0),              
-            //}, 64, 64, 0f);
+            #endregion          
 
             base.Update(gameTime);
         }
@@ -153,15 +139,7 @@ namespace Tiler
             if (MySuperProjectile != null && MySuperProjectile.ProjectileState != SuperProjectile.PROJECTILE_STATE.STILL)
             {
                 MySuperProjectile.Draw(gameTime);
-            }
-
-            //if (playerProjectile != null)
-            //{
-            //   playerProjectile.Draw(gameTime);
-            //}       
-
-
-
+            }        
         }
     }
 }

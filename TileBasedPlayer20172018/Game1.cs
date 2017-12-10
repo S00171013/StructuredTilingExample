@@ -47,7 +47,7 @@ namespace Tiler
 
 
 
-        Projectile playerProjectile;
+        
 
 
 
@@ -183,7 +183,7 @@ namespace Tiler
                             Content.Load<Texture2D>(@"Tiles/collider"),
                             x, y
                             ));
-                    }                   
+                    }
                 }
         }
 
@@ -209,7 +209,7 @@ namespace Tiler
                         yFloatVer = (float)y;
 
                         // Spawn the player, the vector2 constructor takes floats only, this is why the previous step is necessary.
-                        //The Vector2 constructor sets the position of the player to that of the home tile, or at least it should.
+                        //The Vector2 constructor sets the position of the player to that of the home tile.
                         Services.AddService(player1 = new TilePlayer(this, new Vector2(xFloatVer, yFloatVer), new List<TileRef>()
             {
                 new TileRef(15, 2, 0),
@@ -257,7 +257,7 @@ namespace Tiler
                         yFloatVer = (float)y;
 
                         // Spawn the player, the vector2 constructor takes floats only, this is why the previous step is necessary.
-                        //The Vector2 constructor sets the position of the player to that of the home tile, or at least it should.
+                        //The Vector2 constructor sets the position of the player to that of the home tile.
                         sentries.Add(new Sentry(this, new Vector2(xFloatVer, yFloatVer), new List<TileRef>()
             {
                 new TileRef(21, 2, 0),
@@ -308,19 +308,6 @@ namespace Tiler
             {
                 player1.MySuperProjectile.WallCollision(item);
             }
-            
-            
-
-            if (Keyboard.GetState().IsKeyDown(Keys.Space))
-            {
-                playerProjectile = new Projectile(this, new Vector2(player1.PixelPosition.X, player1.PixelPosition.Y), new List<TileRef>()
-            {
-                new TileRef(0, 0, 0),
-                new TileRef(1, 0, 0),
-            }, 64, 64, 0f);
-
-            }
-
 
             // Play background music.
             timeSpan -= gameTime.ElapsedGameTime;
@@ -329,11 +316,10 @@ namespace Tiler
             if (timeSpan < TimeSpan.Zero && MediaPlayer.Volume != 0.5f)
             {
                 MediaPlayer.Play(backgroundMusic);
-                MediaPlayer.Volume += 0.5f;             
+                MediaPlayer.Volume += 0.5f;
             }
 
-
-
+            base.Update(gameTime);
 
             //double timer = gameTime.ElapsedGameTime.TotalSeconds;
 
@@ -342,33 +328,32 @@ namespace Tiler
             //remainingTime -= 1;
             //}
 
-            // TODO: Add your update logic here
+            // TODO: Add your update logic here           
 
-            base.Update(gameTime);
+            /// <summary>
+            /// This is called when the game should draw itself.
+            /// </summary>
+            /// <param name="gameTime">Provides a snapshot of timing values.</param>
         }
 
-        /// <summary>
-        /// This is called when the game should draw itself.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
+
         protected override void Draw(GameTime gameTime)
-        {
-            GraphicsDevice.Clear(Color.Maroon);
+{
+    GraphicsDevice.Clear(Color.Maroon);
 
-            spriteBatch.Begin();
+    spriteBatch.Begin();
 
-            //DrawString(SpriteFont spriteFont, string text, Vector2 position, Color color, float rotation, Vector2 origin, Vector2 scale, SpriteEffects effects, float layerDepth);
+    //DrawString(SpriteFont spriteFont, string text, Vector2 position, Color color, float rotation, Vector2 origin, Vector2 scale, SpriteEffects effects, float layerDepth);
 
+    // Draw remaining time.
+    spriteBatch.DrawString(timerFont, "Remaining Time: " + remainingTime, Camera.CamPos, Color.White, 0f, new Vector2(20, 20), 1f, 0, 10f);
 
-            // Draw remaining time.
-            spriteBatch.DrawString(timerFont, "Remaining Time: " + remainingTime, Camera.CamPos, Color.White, 0f, new Vector2(20,20), 1f, 0, 10f);
+    // TODO: Add your drawing code here
 
-            // TODO: Add your drawing code here
+    spriteBatch.End();
 
-            spriteBatch.End();
-
-            base.Draw(gameTime);
-        }
+    base.Draw(gameTime);
+}
 
     }
 }

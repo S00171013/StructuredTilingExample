@@ -26,6 +26,8 @@ namespace Tiler
         float ExplosionVisibleLimit = 1000;
         Vector2 StartPosition;
 
+        Vector2 explosionLocation;
+
 
         public PROJECTILE_STATE ProjectileState
         {
@@ -46,7 +48,7 @@ namespace Tiler
            
             myGame = game;
 
-            explosion = new AnimateSheetSprite(myGame, Target, new List<TileRef>()
+            explosion = new AnimateSheetSprite(myGame, explosionLocation, new List<TileRef>()
             {
                 new TileRef(2, 0, 0),             
             }, 64, 64, 0f);
@@ -59,7 +61,6 @@ namespace Tiler
             //explosion.position -= textureCenter;
             //explosion.Visible = false;
 
-
             //StartPosition = position;
             //PixelPosition = initialPosition;
             ProjectileState = PROJECTILE_STATE.STILL;
@@ -70,7 +71,7 @@ namespace Tiler
         {
             if (BoundingRectangle.Intersects(c.CollisionField))
             {
-                ProjectileState = PROJECTILE_STATE.EXPLODING;
+                ProjectileState = PROJECTILE_STATE.STILL;
             }
         }
 
@@ -86,7 +87,6 @@ namespace Tiler
                     explosion.Visible = false;
                     break;
 
-
                 // Using Lerp here could use target - pos and normalise for direction and then apply
                 // Velocity
                 case PROJECTILE_STATE.FIRING:
@@ -97,33 +97,37 @@ namespace Tiler
                     this.angleOfRotation = TurnToFace(PixelPosition,
                                             Target, angleOfRotation, 1f);
 
-                    //if (Vector2.Distance(PixelPosition, Target) < 2)
-                    //    projectileState = PROJECTILE_STATE.EXPLODING;
+                    if (Vector2.Distance(PixelPosition, Target) <= 2f)
+                    {
+                        explosionLocation = PixelPosition;
+                        projectileState = PROJECTILE_STATE.EXPLODING;
+                    }
                     break;
 
                 case PROJECTILE_STATE.EXPLODING:
-                    explosion.PixelPosition = Target;
                     explosion.Visible = true;
-                    break;
+                    explosion.PixelPosition = explosionLocation; 
+                   break;
             }
 
             // if the explosion is visible then just play the animation and count the timer
             if (explosion.Visible)
             {
-                explosion.Update(gametime);
-                ExplosionTimer += gametime.ElapsedGameTime.Milliseconds;
+               explosion.Update(gametime);
+            //    ExplosionTimer += gametime.ElapsedGameTime.Milliseconds;
             }
 
-            // if the timer goes off the explosion is finished.
-            if (ExplosionTimer > ExplosionVisibleLimit)
-            {
-                explosion.Visible = false;
-                ExplosionTimer = 0;
-                projectileState = PROJECTILE_STATE.STILL;
-            }
+            //// if the timer goes off the explosion is finished.
+            //if (ExplosionTimer > ExplosionVisibleLimit)
+            //{
+            //    explosion.Visible = false;
+            //    ExplosionTimer = 0;
+            //    projectileState = PROJECTILE_STATE.STILL;
+            //}
 
             base.Update(gametime);
         }
+
         public void Fire(Vector2 directionIn)
         {
             Target = directionIn * new Vector2(1, 1) * RocketVelocity;
@@ -140,7 +144,7 @@ namespace Tiler
             //spriteBatch.Draw(spriteImage, position, SourceRectangle,Color.White);
             //spriteBatch.End();
 
-            if (explosion.Visible)
+            if (explosion.Visible == true)
             {
                 explosion.Draw(gameTime);
             }
