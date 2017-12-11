@@ -104,7 +104,7 @@ namespace Tiler
         {2,1,1,1,2,2,0,3,0,2,2,2,2,2,2,2,2,2,2,2,6,6,6,6,6,0,0,6,6,6,6,6,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2},
         {2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1,6,6,6,6,6,6,6,6,6,6,6,6,1,2,2,2,2,2,2,2,2,1,1,2,2,2,2,2,2,2,2,2},
         {2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1,1,6,6,6,6,6,6,6,6,6,6,6,6,1,1,2,2,2,2,2,2,2,1,1,2,2,2,2,2,2,2,2,2},
-        {6,7,7,7,1,1,1,1,3,1,1,3,1,1,3,1,1,1,1,1,6,2,6,6,2,6,6,2,6,6,2,6,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2},
+        {5,7,7,7,1,1,1,1,3,1,1,3,1,1,3,1,1,1,1,1,6,2,6,6,2,6,6,2,6,6,2,6,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2},
         {7,7,7,7,1,1,1,1,3,1,1,3,1,1,3,1,1,1,1,1,3,2,6,6,2,3,6,2,6,3,2,6,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2},
         {2,2,2,2,2,2,2,2,3,2,2,3,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,3,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2},
         {2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2},
@@ -443,13 +443,16 @@ namespace Tiler
 
             #region Play background music when test timer is up.
             // Play background music.
-            timeSpan -= gameTime.ElapsedGameTime;
+            //timeSpan -= gameTime.ElapsedGameTime;
 
-            //if (timeSpan < TimeSpan.Zero && MediaPlayer.Volume != 0.5f)
-            //{
-            //    MediaPlayer.Play(backgroundMusic);
-            //    MediaPlayer.Volume += 0.5f;
-            //}
+            // timeSpan < TimeSpan.Zero
+            // Add the above line to the if statement below to test the countdown.
+
+            if(MediaPlayer.Volume != 0.5f)
+            {
+                MediaPlayer.Play(backgroundMusic);
+                MediaPlayer.Volume += 0.5f;
+            }
             #endregion
 
             base.Update(gameTime);
@@ -471,7 +474,7 @@ namespace Tiler
             //DrawString(SpriteFont spriteFont, string text, Vector2 position, Color color, float rotation, Vector2 origin, Vector2 scale, SpriteEffects effects, float layerDepth);
 
             // Draw remaining time.
-            spriteBatch.DrawString(timerFont, "Remaining Time: " + remainingTime, Camera.CamPos, Color.White, 0f, new Vector2(20, 20), 1f, 0, 1f);
+            spriteBatch.DrawString(timerFont, "Remaining Time: " + remainingTime, Camera.CamPos, Color.White, 0f, new Vector2(20, 20), 1f, 0, 200f);
 
             //if(gameOverState == false)
             //{

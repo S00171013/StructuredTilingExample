@@ -51,6 +51,12 @@ namespace Tiler
             if (BoundingRectangle.Intersects(c.CollisionField))
             {
                 PixelPosition = previousPosition;
+
+            }
+
+            if(MySuperProjectile.BoundingRectangle.Intersects(c.CollisionField))
+            {
+                MySuperProjectile.ProjectileState = SuperProjectile.PROJECTILE_STATE.EXPLODING;
             }
         }
 
@@ -78,6 +84,11 @@ namespace Tiler
             if (BoundingRectangle.Intersects(l.BoundingRectangle) && l.Visible == true)
             {
                 PixelPosition = previousPosition;
+            }
+
+            if (MySuperProjectile.BoundingRectangle.Intersects(l.BoundingRectangle) && MySuperProjectile.Visible == true && l.Visible == true)
+            {
+                MySuperProjectile.ProjectileState = SuperProjectile.PROJECTILE_STATE.EXPLODING;
             }
 
             if (l.open == true)
