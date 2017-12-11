@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Tiling;
+using Microsoft.Xna.Framework.Audio;
 
 namespace Tiler
 {
@@ -17,9 +18,7 @@ namespace Tiler
         public Vector2 previousPosition;
 
         protected Game myGame;
-
-        Texture2D projectileSprite;
-
+       
         private SuperProjectile mySuperProjectile;
 
         public SuperProjectile MySuperProjectile
@@ -41,7 +40,7 @@ namespace Tiler
         {
             DrawOrder = 1;
             PixelPosition = userPosition * FrameWidth;
-
+           
             myGame = game;
         }
 
@@ -137,7 +136,7 @@ namespace Tiler
             {
                 // fire the rocket in the direction the player is pointing.
                 if (Keyboard.GetState().IsKeyDown(Keys.Space) && MySuperProjectile.ProjectileState == SuperProjectile.PROJECTILE_STATE.STILL)
-                {
+                {             
                     MySuperProjectile.Fire(direction);
                 }
             }

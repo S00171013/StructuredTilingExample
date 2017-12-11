@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Audio;
 using System;
 using System.Linq;
+using AnimatedSprite;
 
 namespace Tiler
 {
@@ -25,10 +26,18 @@ namespace Tiler
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        // Declare textures for victory screen and game over screen.
+        Texture2D victory;
+        Texture2D gameOver;
+
+        bool gameOverState = false;
+
+
+
         #region Declare Sound Effects and Song
         // start up music, for test.
-        SoundEffect startUpSound;
-        private SoundEffect effect;
+        private SoundEffect playerFire;
+        private SoundEffect sentryExplosion;
 
         // Background Music.
         Song backgroundMusic;
@@ -66,6 +75,11 @@ namespace Tiler
         int sentryCount = 0;
         int killCount = 0;
 
+        // Test death explosions.
+        AnimateSheetSprite deathExplosion;
+
+        TimeSpan explosionDuration = TimeSpan.FromSeconds(1);
+
         // Create a lock list.
         List<Lock> locks = new List<Lock>();
 
@@ -99,6 +113,10 @@ namespace Tiler
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+
+            graphics.PreferredBackBufferWidth = 1280;
+            graphics.PreferredBackBufferHeight = 720;
+            graphics.ApplyChanges();
         }
 
         /// <summary>
@@ -145,12 +163,22 @@ namespace Tiler
             spriteBatch = new SpriteBatch(GraphicsDevice);
             Services.AddService(spriteBatch);
 
+            // Load in victory and game over textures.
+            victory = Content.Load<Texture2D>(@"Winter Game Sprites/Victory");
+
+            gameOver = Content.Load<Texture2D>(@"Winter Game Sprites/Game Over Edited");
+
             // Create font for the timer.
             timerFont = Content.Load<SpriteFont>("timerFont");
 
             // Load in the tile sheet.
             Texture2D tx = Content.Load<Texture2D>(@"Tiles/tank tiles 64 x 64");
             Services.AddService(tx);
+
+
+            // Load Sound effects
+            playerFire = Content.Load<SoundEffect>(@"Winter Game Sound Effects Wave/PlayerFire");
+            sentryExplosion = Content.Load<SoundEffect>(@"Winter Game Sound Effects Wave/SentryExplosion");
 
 
             // Tile References to be drawn on the Map corresponding to the entries in the defined 
@@ -288,11 +316,19 @@ namespace Tiler
                 new TileRef(21, 8, 0),
             }, 64, 64, 0f));
 
-                        sentryCount++;
+                        sentryCount++;                      
                     }
-
                 }
             }
+
+            foreach (Sentry item in sentries)
+            {
+                item.loadProjectile(new SuperProjectile(this, item.PixelPosition, new List<TileRef>()
+            {
+                new TileRef(4, 0, 0)
+            }, 64, 64, 0f));
+            }
+
         }
 
         public void SpawnLocks(TileType t)
@@ -347,6 +383,12 @@ namespace Tiler
                 Exit();
             }
 
+            if (Keyboard.GetState().IsKeyDown(Keys.Space) && player1.MySuperProjectile.ProjectileState == SuperProjectile.PROJECTILE_STATE.STILL)
+            {
+                playerFire.Play();
+            }
+
+
             #region Handle behaviour between player and sentry.
             foreach (var item in sentries)
             {
@@ -358,17 +400,24 @@ namespace Tiler
                 }
 
                 if (item.Health <= 0)
-                {
+                {                
                     if (item.Visible == true)
                     {
                         killCount++;
+
+                        deathExplosion = new AnimateSheetSprite(this, item.PixelPosition, new List<TileRef>()
+            {
+                new TileRef(0, 0, 0),
+                new TileRef(1, 0, 0),
+                new TileRef(2, 0, 0),
+            }, 64, 64, 0f);
                     }
 
                     item.Visible = false;
-                }               
+                }
             }
             #endregion
-
+      
             foreach (Lock collisionLock in locks)
             {
                 player1.CollisionLock(collisionLock);
@@ -379,19 +428,13 @@ namespace Tiler
             {
                 MediaPlayer.Volume -= 0.4f;
 
-                foreach(Lock item in locks)
+                foreach (Lock item in locks)
                 {
                     item.Visible = false;
                 }
+
+                gameOverState = true;
             }
-
-            // Attempt 2
-            //IEnumerable<Sentry> killList = sentries.Where(s => s.Health <= 0);
-
-            //foreach(Sentry s in killList)
-            //{
-            //    sentries.Remove(s);
-            //}
 
             foreach (var item in projectileColliders)
             {
@@ -402,11 +445,11 @@ namespace Tiler
             // Play background music.
             timeSpan -= gameTime.ElapsedGameTime;
 
-            if (timeSpan < TimeSpan.Zero && MediaPlayer.Volume != 0.5f)
-            {
-                MediaPlayer.Play(backgroundMusic);
-                MediaPlayer.Volume += 0.5f;
-            }
+            //if (timeSpan < TimeSpan.Zero && MediaPlayer.Volume != 0.5f)
+            //{
+            //    MediaPlayer.Play(backgroundMusic);
+            //    MediaPlayer.Volume += 0.5f;
+            //}
             #endregion
 
             base.Update(gameTime);
@@ -428,7 +471,13 @@ namespace Tiler
             //DrawString(SpriteFont spriteFont, string text, Vector2 position, Color color, float rotation, Vector2 origin, Vector2 scale, SpriteEffects effects, float layerDepth);
 
             // Draw remaining time.
-            spriteBatch.DrawString(timerFont, "Remaining Time: " + remainingTime, Camera.CamPos, Color.White, 0f, new Vector2(20, 20), 1f, 0, 10f);
+            spriteBatch.DrawString(timerFont, "Remaining Time: " + remainingTime, Camera.CamPos, Color.White, 0f, new Vector2(20, 20), 1f, 0, 1f);
+
+            //if(gameOverState == false)
+            //{
+            //    spriteBatch.Draw(gameOver, GraphicsDevice.Viewport.Bounds, Color.White);
+            //}
+
 
             // TODO: Add your drawing code here
 

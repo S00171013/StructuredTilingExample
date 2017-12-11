@@ -14,7 +14,26 @@ namespace Tiler
     {
         protected Game myGame;
 
+        public bool deathExplosionOver = false;
+
         float chaseRadius = 200;
+
+        public Vector2 direction;
+
+        private SuperProjectile sentrySuperProjectile;
+
+        public SuperProjectile SentrySuperProjectile
+        {
+            get
+            {
+                return sentrySuperProjectile;
+            }
+
+            set
+            {
+                sentrySuperProjectile = value;
+            }
+        }
 
         // Sentry constructor
         public Sentry(Game game, Vector2 userPosition,         
@@ -50,19 +69,55 @@ namespace Tiler
             {
                 this.angleOfRotation = TurnToFace(PixelPosition,
                                                 p.PixelPosition, angleOfRotation, 1f);
+
+                if (SentrySuperProjectile != null)
+                {
+                    // fire the rocket in the direction the player is pointing.
+                    if(SentrySuperProjectile.ProjectileState == SuperProjectile.PROJECTILE_STATE.STILL)
+                    {
+                        SentrySuperProjectile.Fire(direction);
+                    }
+                }
             }
         }
 
-        //EnemyProjectile.fire(p.position);
+        public void loadProjectile(SuperProjectile r)
+        {
+            sentrySuperProjectile = r;
+        }
 
         public override void Update(GameTime gameTime)
         {
-            //Follow(player);          
+            // Create direction variable.
+            direction = new Vector2((float)Math.Cos(angleOfRotation), (float)Math.Sin(angleOfRotation));
+
+
+            #region Handle Projectile
+            if (SentrySuperProjectile != null && SentrySuperProjectile.ProjectileState == SuperProjectile.PROJECTILE_STATE.STILL)
+            {
+                SentrySuperProjectile.PixelPosition = this.PixelPosition;
+            }
+           
+            if (SentrySuperProjectile != null)
+            {
+                SentrySuperProjectile.Update(gameTime);
+            }
+            #endregion
 
             base.Update(gameTime);
         }
 
-        }
+        //public override void Draw(GameTime gameTime)
+        //{
+        //    base.Draw(gameTime);
+
+        //    if (SentrySuperProjectile != null && SentrySuperProjectile.ProjectileState != SuperProjectile.PROJECTILE_STATE.STILL)
+        //    {
+        //        SentrySuperProjectile.Draw(gameTime);
+        //    }
+        //}
+
+    }
 
     }
 

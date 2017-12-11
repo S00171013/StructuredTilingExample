@@ -79,11 +79,14 @@
     <Content Include="Content\Winter Game Sound Effects Wave\PS1Startup.wav" />
     <Content Include="Content\Winter Game Sound Effects Wave\SentryExplosion.wav" />
     <Content Include="Content\Winter Game Sound Effects Wave\SentryFire.wav" />
+    <Content Include="Content\Winter Game Sound Effects Wave\Shoot.wav" />
     <Content Include="Content\Winter Game Sound Effects Wave\Steel.wav" />
     <Content Include="Content\Winter Game Sound Effects Wave\WTFBoom.wav" />
+    <Content Include="Content\Winter Game Sprites\Game Over Edited.jpg" />
     <Content Include="Content\Winter Game Sprites\Insert Coin.jpg" />
     <Content Include="Content\Winter Game Sprites\Loading Screen.jpg" />
     <Content Include="Content\Winter Game Sprites\Projectile.png" />
+    <Content Include="Content\Winter Game Sprites\Victory.jpg" />
     <Content Include="Icon.ico" />
   </ItemGroup>
   <ItemGroup>

@@ -56,10 +56,7 @@ namespace Tiler
                 new TileRef(8, 0, 0),
                 new TileRef(2, 0, 0),
             }, 64, 64, 0f);
-
-
-            
-
+       
             //initialPosition = new Vector2(20, 20);
 
             //explosion = rocketExplosion;
