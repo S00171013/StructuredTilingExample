@@ -81,6 +81,8 @@ namespace Tiler
         // Create a lock list.
         List<Lock> locks = new List<Lock>();
 
+        TimeSpan sentryFollowDelay = TimeSpan.FromSeconds(3);
+
 
         string[] backTileNames = { "crates", "pavement", "red water", "sentry", "home", "exit", "skull", "locked" };
 
@@ -168,7 +170,7 @@ namespace Tiler
 
             // Create font for the timer.
             timerFont = Content.Load<SpriteFont>("timerFont");
-            
+
 
             // Load in the tile sheet.
             Texture2D tx = Content.Load<Texture2D>(@"Tiles/tank tiles 64 x 64");
@@ -315,7 +317,7 @@ namespace Tiler
                 new TileRef(21, 8, 0),
             }, 64, 64, 0f));
 
-                        sentryCount++;                      
+                        sentryCount++;
                     }
                 }
             }
@@ -377,33 +379,40 @@ namespace Tiler
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            // Exit the game.
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
             {
                 Exit();
             }
 
+            // Play sound effect when the player shoots.
             if (Keyboard.GetState().IsKeyDown(Keys.Space) && player1.MySuperProjectile.ProjectileState == SuperProjectile.PROJECTILE_STATE.STILL)
             {
-                playerFire.Play();           
+                playerFire.Play();
             }
 
 
             #region Handle behaviour between player and sentry.
             foreach (var item in sentries)
             {
+                // Follow the player's position.
                 item.Follow(player1);
 
+                // Ensure the sentry and the player collide if the sentry is still visible.
                 if (item.Visible == true)
                 {
                     player1.CollisionSentry(item);
                 }
 
+                // If the sentry is killed...
                 if (item.Health <= 0)
-                {                
+                {
                     if (item.Visible == true)
                     {
+                        // ...Add to the killcount.
                         killCount++;
 
+                        // Create an explosion where the sentry once was.
                         deathExplosion = new AnimateSheetSprite(this, item.PixelPosition, new List<TileRef>()
             {
                 new TileRef(0, 0, 0),
@@ -412,17 +421,27 @@ namespace Tiler
             }, 64, 64, 0f);
                     }
 
+                    // Make the sentry invisible.
                     item.Visible = false;
                 }
             }
             #endregion
-      
+
+            #region Handle the player and player projectile's collisions with walls.
+            // Ensure that the player collides with locks.
             foreach (Lock collisionLock in locks)
             {
                 player1.CollisionLock(collisionLock);
             }
 
-            // What to do when all sentries have been destroyed.
+            // Ensure the player projectile collides with walls.
+            foreach (var item in projectileColliders)
+            {
+                player1.MySuperProjectile.WallCollision(item);
+            }
+            #endregion
+
+            #region  What to do when all sentries have been destroyed.
             if (killCount == sentryCount)
             {
                 MediaPlayer.Volume -= 0.4f;
@@ -434,11 +453,7 @@ namespace Tiler
 
                 gameOverState = true;
             }
-
-            foreach (var item in projectileColliders)
-            {
-                player1.MySuperProjectile.WallCollision(item);
-            }
+            #endregion
 
             #region Play background music when test timer is up.
             // Play background music.
@@ -447,7 +462,7 @@ namespace Tiler
             // timeSpan < TimeSpan.Zero
             // Add the above line to the if statement below to test the countdown.
 
-            if(MediaPlayer.Volume != 0.5f)
+            if (MediaPlayer.Volume != 0.5f)
             {
                 MediaPlayer.Play(backgroundMusic);
                 MediaPlayer.Volume += 0.5f;
@@ -473,7 +488,7 @@ namespace Tiler
             //DrawString(SpriteFont spriteFont, string text, Vector2 position, Color color, float rotation, Vector2 origin, Vector2 scale, SpriteEffects effects, float layerDepth);
 
             // Draw remaining time.
-            spriteBatch.DrawString(timerFont, "Remaining Time: ", new Vector2(player1.PixelPosition.X+10, player1.PixelPosition.X + 10), Color.White);
+            spriteBatch.DrawString(timerFont, "Remaining Time: ", new Vector2(player1.PixelPosition.X + 10, player1.PixelPosition.X + 10), Color.White);
 
             //DrawString(SpriteFont spriteFont, string text, Vector2 position, Color color);
 
