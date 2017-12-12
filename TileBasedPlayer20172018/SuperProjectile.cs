@@ -151,6 +151,8 @@ namespace Tiler
         {
             Target = directionIn * new Vector2(1, 1) * RocketVelocity;
 
+            
+
             projectileState = PROJECTILE_STATE.FIRING;
 
             //this.PixelPosition += direction * new Vector2(1, 1) * speed;

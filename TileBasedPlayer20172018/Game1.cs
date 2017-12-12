@@ -32,8 +32,6 @@ namespace Tiler
 
         bool gameOverState = false;
 
-
-
         #region Declare Sound Effects and Song
         // start up music, for test.
         private SoundEffect playerFire;
@@ -170,6 +168,7 @@ namespace Tiler
 
             // Create font for the timer.
             timerFont = Content.Load<SpriteFont>("timerFont");
+            
 
             // Load in the tile sheet.
             Texture2D tx = Content.Load<Texture2D>(@"Tiles/tank tiles 64 x 64");
@@ -385,7 +384,7 @@ namespace Tiler
 
             if (Keyboard.GetState().IsKeyDown(Keys.Space) && player1.MySuperProjectile.ProjectileState == SuperProjectile.PROJECTILE_STATE.STILL)
             {
-                playerFire.Play();
+                playerFire.Play();           
             }
 
 
@@ -474,12 +473,14 @@ namespace Tiler
             //DrawString(SpriteFont spriteFont, string text, Vector2 position, Color color, float rotation, Vector2 origin, Vector2 scale, SpriteEffects effects, float layerDepth);
 
             // Draw remaining time.
-            spriteBatch.DrawString(timerFont, "Remaining Time: " + remainingTime, Camera.CamPos, Color.White, 0f, new Vector2(20, 20), 1f, 0, 200f);
+            spriteBatch.DrawString(timerFont, "Remaining Time: ", new Vector2(player1.PixelPosition.X+10, player1.PixelPosition.X + 10), Color.White);
 
-            //if(gameOverState == false)
-            //{
-            //    spriteBatch.Draw(gameOver, GraphicsDevice.Viewport.Bounds, Color.White);
-            //}
+            //DrawString(SpriteFont spriteFont, string text, Vector2 position, Color color);
+
+            if (gameOverState == false)
+            {
+                spriteBatch.Draw(gameOver, GraphicsDevice.Viewport.Bounds, Color.White);
+            }
 
 
             // TODO: Add your drawing code here
