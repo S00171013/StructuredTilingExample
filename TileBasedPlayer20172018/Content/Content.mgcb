@@ -176,3 +176,9 @@
 /processorParam:Quality=Best
 /build:Winter Game Sound Effects Wave/Shoot.wav
 
+#begin Winter Game Sound Effects Wave/TanksForPlaying.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Winter Game Sound Effects Wave/TanksForPlaying.wav
+

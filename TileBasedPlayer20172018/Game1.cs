@@ -33,9 +33,11 @@ namespace Tiler
         bool gameOverState = false;
 
         #region Declare Sound Effects and Song
-        // start up music, for test.
+        // Sound Effects.
         private SoundEffect playerFire;
         private SoundEffect sentryExplosion;
+
+        private SoundEffect victoryFanfare; 
 
         // Background Music.
         Song backgroundMusic;
@@ -70,20 +72,20 @@ namespace Tiler
         // Testing removing sentries.
         List<Sentry> killList = new List<Sentry>();
 
+        // Declare ints to keep track of the number of sentries and sentries killed.
         int sentryCount = 0;
         int killCount = 0;
 
         // Test death explosions.
-        AnimateSheetSprite deathExplosion;
-
-        TimeSpan explosionDuration = TimeSpan.FromSeconds(1);
+        AnimateSheetSprite deathExplosion;      
 
         // Create a lock list.
         List<Lock> locks = new List<Lock>();
 
-        TimeSpan sentryFollowDelay = TimeSpan.FromSeconds(3);
+        // Create Collider for Exit Tile.
+        Collider exitTile;
 
-
+      
         string[] backTileNames = { "crates", "pavement", "red water", "sentry", "home", "exit", "skull", "locked" };
 
         public enum TileType { CRATES, PAVEMENT, REDWATER, SENTRY, HOME, EXIT, SKULL, LOCKED };
@@ -97,8 +99,8 @@ namespace Tiler
         {2,2,2,2,2,2,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,2,2,6,6,6,6,6,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2},
         {2,2,2,2,2,2,0,0,0,0,0,1,1,1,0,0,0,1,1,1,0,0,6,6,6,6,6,6,6,6,6,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,0,3,2,2,2,2},
         {2,2,2,2,2,2,0,0,0,0,0,1,1,0,0,0,3,0,1,1,6,6,6,6,6,6,3,6,6,6,6,6,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1},
-        {2,2,2,2,2,2,0,0,0,0,0,1,1,0,0,0,0,0,0,0,6,6,6,6,6,6,6,6,6,6,6,6,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1},
-        {2,1,1,1,2,2,0,3,0,2,1,1,1,2,2,2,2,1,3,0,6,6,2,2,2,6,6,2,2,2,6,6,2,2,2,2,2,2,2,2,2,2,2,2,2,3,1,1,2,2,2,2},
+        {2,2,2,2,2,2,0,0,0,0,0,1,1,0,0,0,0,0,1,1,6,6,6,6,6,6,6,6,6,6,6,6,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1},
+        {2,1,1,1,2,2,0,3,0,2,1,1,1,2,2,2,2,0,3,0,6,6,2,2,2,6,6,2,2,2,6,6,2,2,2,2,2,2,2,2,2,2,2,2,2,3,1,1,2,2,2,2},
         {2,1,4,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,6,6,2,2,6,6,6,6,2,2,6,6,2,2,2,2,0,0,0,3,0,0,3,0,0,0,1,1,2,2,2,2},
         {2,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,6,6,6,6,6,6,6,6,6,6,6,6,2,2,2,2,3,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2},
         {2,1,1,1,2,2,0,3,0,2,2,2,2,2,2,2,2,2,2,2,6,6,6,6,6,0,0,6,6,6,6,6,2,2,2,2,0,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2},
@@ -135,8 +137,7 @@ namespace Tiler
 
             #region Set Colliders
             SetColliders(TileType.CRATES);
-            SetColliders(TileType.REDWATER);
-            SetColliders(TileType.EXIT);
+            SetColliders(TileType.REDWATER);         
             #endregion
 
 
@@ -145,6 +146,9 @@ namespace Tiler
 
             SpawnLocks(TileType.LOCKED);
 
+            FindExitTile(TileType.EXIT);
+
+            // Load the player's projectile.
             player1.loadProjectile(new SuperProjectile(this, player1.PixelPosition, new List<TileRef>()
             {
                 new TileRef(4, 0, 0)
@@ -163,6 +167,10 @@ namespace Tiler
             spriteBatch = new SpriteBatch(GraphicsDevice);
             Services.AddService(spriteBatch);
 
+            // Load in the tile sheet.
+            Texture2D tx = Content.Load<Texture2D>(@"Tiles/tank tiles 64 x 64");
+            Services.AddService(tx);
+
             // Load in victory and game over textures.
             victory = Content.Load<Texture2D>(@"Winter Game Sprites/Victory");
 
@@ -170,21 +178,16 @@ namespace Tiler
 
             // Create font for the timer.
             timerFont = Content.Load<SpriteFont>("timerFont");
-
-
-            // Load in the tile sheet.
-            Texture2D tx = Content.Load<Texture2D>(@"Tiles/tank tiles 64 x 64");
-            Services.AddService(tx);
-
-
+      
             // Load Sound effects
             playerFire = Content.Load<SoundEffect>(@"Winter Game Sound Effects Wave/PlayerFire");
             sentryExplosion = Content.Load<SoundEffect>(@"Winter Game Sound Effects Wave/SentryExplosion");
 
+            victoryFanfare = Content.Load<SoundEffect>(@"Winter Game Sound Effects Wave/TanksForPlaying");
 
+            #region Load Tile Images
             // Tile References to be drawn on the Map corresponding to the entries in the defined 
             // Tile Map
-
             // "crates", "pavement", "red water", "sentry", "home", "exit", "skull", locked".
             TileRefs.Add(new TileRef(11, 1, 0));
             TileRefs.Add(new TileRef(3, 3, 1));
@@ -197,6 +200,9 @@ namespace Tiler
             // Names for the Tiles
 
             new SimpleTileLayer(this, backTileNames, tileMap, TileRefs, tileWidth, tileHeight);
+            #endregion
+
+            // I haven't used the following line of code later on.
             List<Tile> found = SimpleTileLayer.GetNamedTiles("sentry");
 
             #region Load and Play BGM.
@@ -361,6 +367,21 @@ namespace Tiler
 
                 }
             }
+        }     
+
+        public void FindExitTile(TileType t)
+        {
+            for (int x = 0; x < tileMap.GetLength(1); x++)
+                for (int y = 0; y < tileMap.GetLength(0); y++)
+                {                   
+                    if (tileMap[y, x] == (int)t)
+                    {
+                        exitTile = new Collider(this,
+                            Content.Load<Texture2D>(@"Tiles/collider"),
+                            x, y
+                            );
+                    }
+                }
         }
 
         /// <summary>
@@ -436,9 +457,7 @@ namespace Tiler
                     #endregion
                 }
             }
-            #endregion
-
-           
+            #endregion    
 
             #region Handle the player and player projectile's collisions with walls.
             // Ensure that the player collides with locks.
@@ -483,6 +502,14 @@ namespace Tiler
             }
             #endregion
 
+            // What to do when the player reaches the exit tile.
+            if(player1.BoundingRectangle.Intersects(exitTile.CollisionField) && player1.Visible == true)
+            {              
+                victoryFanfare.Play();
+                player1.Visible = false;
+            }
+
+
             base.Update(gameTime);
             // TODO: Add your update logic here           
 
@@ -501,13 +528,15 @@ namespace Tiler
 
             //DrawString(SpriteFont spriteFont, string text, Vector2 position, Color color, float rotation, Vector2 origin, Vector2 scale, SpriteEffects effects, float layerDepth);
 
-            // Draw remaining time.
-            spriteBatch.DrawString(timerFont, "Remaining Time: ", new Vector2(player1.PixelPosition.X + 10, player1.PixelPosition.X + 10), Color.White);
+            // Draw remaining time. I know that the following string is likely being drawn, the issue is that it likely behind the tilemap.
+            // I have fiddled with the tilemap's draw order but I haven't managed to see this string yet. 
+            spriteBatch.DrawString(timerFont, "Remaining Time: ", Camera.CamPos, Color.White);
 
             //DrawString(SpriteFont spriteFont, string text, Vector2 position, Color color);
 
-            if (gameOverState == false)
+            if (gameOverState == true)
             {
+                // The following does appear, but it is hidden by the tilemap. I'm still trying to work out how to properly set its Draw Order.
                 spriteBatch.Draw(gameOver, GraphicsDevice.Viewport.Bounds, Color.White);
             }
 
