@@ -70,9 +70,9 @@ namespace Tiler
 
         public void WallCollision(Collider c)
         {
-            if (BoundingRectangle.Intersects(c.CollisionField))
+            if (BoundingRectangle.Intersects(c.CollisionField) && Visible == true)
             {
-                ProjectileState = PROJECTILE_STATE.STILL;
+                ProjectileState = PROJECTILE_STATE.EXPLODING;
             }
         }
 
@@ -150,9 +150,7 @@ namespace Tiler
         public void Fire(Vector2 directionIn)
         {
             Target = directionIn * new Vector2(1, 1) * RocketVelocity;
-
-            
-
+                     
             projectileState = PROJECTILE_STATE.FIRING;
 
             //this.PixelPosition += direction * new Vector2(1, 1) * speed;
