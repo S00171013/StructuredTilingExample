@@ -119,9 +119,15 @@ namespace AnimatedSprite
         public override void Draw(GameTime gameTime)
         {
             if (Hbar != null)
+            {
                 Hbar.draw(Game.Services.GetService<SpriteBatch>());
+            }
+
             base.Draw(gameTime);
         }
+
+        
+
         /// <summary>
         /// Returns the angle expressed in radians between -Pi and Pi.
         /// Angle is always positive
